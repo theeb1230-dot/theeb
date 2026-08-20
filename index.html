@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المشغل الذكي - قاعدة البيانات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0f0f0f;
+            color: #f1f1f1;
+            font-family: 'Tajawal', -apple-system, sans-serif;
+        }
+        
+        .watch-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .player-section { flex: 2; min-width: 300px; }
+        .player-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .player-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .controls-sidebar {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            background: #272727;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #3f3f3f;
+            padding-bottom: 10px;
+        }
+        .control-group { display: flex; flex-direction: column; gap: 5px; }
+        .control-label { font-size: 0.85rem; color: #aaa; }
+        .custom-select {
+            background-color: #1f1f1f;
+            color: white;
+            border: 1px solid #444;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            outline: none;
+        }
+        .custom-select:focus { border-color: #f1f1f1; }
+
+        .advanced-panel {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .toggle-advanced {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .toggle-advanced:hover { color: #fff; }
+        .advanced-content {
+            display: none;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 12px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .advanced-content.active { display: flex; }
+        
+        .form-group { display: flex; flex-direction: column; flex: 1; min-width: 200px; }
+        .form-label { font-size: 0.85rem; color: #aaa; margin-bottom: 5px; }
+        .form-input {
+            background-color: #272727;
+            color: white;
+            border: 1px solid #444;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-input:focus { border-color: #f1f1f1; }
+
+        .url-display-box {
+            width: 100%;
+            margin-top: 15px;
+            background: #121212;
+            border: 1px dashed #555;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .url-text {
+            color: #3ea6ff;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .copy-btn {
+            background: #3ea6ff;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+        .copy-btn:hover { background: #65b8ff; }
+
+        .btn-apply {
+            width: 100%;
+            padding: 12px;
+            background-color: #f1f1f1;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+        .btn-apply:hover { background-color: #fff; }
+
+        @media (max-width: 900px) {
+            .controls-sidebar { max-width: 100%; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="watch-layout">
+        <div class="player-section">
+            <div class="player-container">
+                <iframe id="videoPlayer" src="" allowfullscreen="true" allow="autoplay; fullscreen"></iframe>
+            </div>
+        </div>
+
+        <div class="controls-sidebar">
+            <div class="sidebar-title">خيارات المشاهدة</div>
+            
+            <div class="control-group">
+                <label class="control-label">اختر العمل (من المكتبة)</label>
+                <select id="catalogSelect" class="custom-select" onchange="loadFromCatalog()">
+                    <option value="">-- اختيار يدوي --</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">الحلقة</label>
+                <select id="episodeSelect" class="custom-select" onchange="updatePlayer()"></select>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">الموسم</label>
+                <select id="seasonSelect" class="custom-select" onchange="renderEpisodes()"></select>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">السيرفر</label>
+                <select id="serverSelect" class="custom-select" onchange="updatePlayer()"></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="advanced-panel">
+        <button class="toggle-advanced" onclick="toggleAdvanced()">
+            <span id="advIcon">▶</span> إعدادات متقدمة (يدوية)
+        </button>
+        
+        <div class="advanced-content" id="advancedContent">
+            <div class="form-group">
+                <label class="form-label">النوع</label>
+                <select id="typeInput" class="form-input" onchange="toggleType(this.value)">
+                    <option value="tv">مسلسل</option>
+                    <option value="movie">فيلم</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">الاسم (Slug)</label>
+                <input type="text" id="slugInput" class="form-input" placeholder="cukur" value="cukur">
+            </div>
+            <div class="form-group" id="seasonGroup">
+                <label class="form-label">عدد المواسم</label>
+                <input type="number" id="seasonsCountInput" class="form-input" value="1" min="1">
+            </div>
+            <div class="form-group" id="epCountGroup">
+                <label class="form-label">عدد الحلقات (لكل موسم)</label>
+                <input type="number" id="epCountInput" class="form-input" value="10" min="1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">السيرفر الافتراضي</label>
+                <input type="number" id="defaultServInput" class="form-input" value="1" min="1" max="10">
+            </div>
+            
+            <button class="btn-apply" onclick="generateInterface(true)">تطبيق وتحديث المشغل</button>
+
+            <div class="url-display-box">
+                <div class="url-text" id="urlDisplay">الرابط سيظهر هنا...</div>
+                <button class="copy-btn" onclick="copyURL()"><i class="fas fa-copy"></i> نسخ الرابط</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = "https://w.anaplayer.online/albaplayer/";
+        let currentType = 'tv';
+        const videoFrame = document.getElementById('videoPlayer');
+
+        // ==========================================
+        // 📚 قاعدة البيانات الشاملة (المكتبة)
+        // ==========================================
+        const CATALOG = [
+            // مسلسلات
+            { title: "وادي الذئاب (Kurtlar Vadisi Pusu)", slug: "kurtlar-vadisi-pusu", type: "tv", seasons: [
+                { number: 1, episodes: 50 }, { number: 2, episodes: 32 }, { number: 3, episodes: 22 }
+            ]},
+            { title: "المنظمة (Teskilat)", slug: "teskilat", type: "tv", seasons: [{ number: 1, episodes: 184 }]},
+            { title: "ثلاث قروش (Uc Kurus)", slug: "uc-kurus", type: "tv", seasons: [{ number: 1, episodes: 28 }]},
+            { title: "رامو (Ramo)", slug: "ramo", type: "tv", seasons: [{ number: 1, episodes: 40 }]},
+            { title: "قطاع طرق لن يحكمو العالم (Eskiya Dunyaya)", slug: "eskiya-dunyaya-hukumdar-olmaz", type: "tv", seasons: [
+                { number: 1, episodes: 40 }, { number: 2, episodes: 31 }, { number: 3, episodes: 36 },
+                { number: 4, episodes: 32 }, { number: 5, episodes: 26 }, { number: 6, episodes: 34 }
+            ]},
+            { title: "قيامة أرطغرل (Dirilis Ertugrul)", slug: "dirilis-ertugrul", type: "tv", seasons: [{ number: 1, episodes: 150 }]},
+            { title: "المؤسس عثمان (Kurulus Osman)", slug: "kurulus-osman", type: "tv", seasons: [{ number: 1, episodes: 194 }]},
+            { title: "حفر (Cukur)", slug: "cukur", type: "tv", seasons: [
+                { number: 1, episodes: 30 }, { number: 2, episodes: 35 }, { number: 3, episodes: 37 }, { number: 4, episodes: 39 }
+            ]},
+            { title: "الذئب الوحيد (Yalniz Kurt)", slug: "yalniz-kurt", type: "tv", seasons: [{ number: 1, episodes: 32 }]},
+            
+            // أفلام
+            { title: "فيلم وادي الذئاب غلاديو (2009)", slug: "kurtlar-vadisi-gladio-2009", type: "movie", seasons: [] },
+            { title: "فيلم وادي الذئاب الوطن (2017)", slug: "kurtlar-vadisi-vatan-2017", type: "movie", seasons: [] },
+            { title: "فيلم وادي الذئاب فلسطين (2011)", slug: "kurtlar-vadisi-filistin-2011", type: "movie", seasons: [] },
+            { title: "فيلم وادي الذئاب العراق (2006)", slug: "kurtlar-vadisi-irak-2006", type: "movie", seasons: [] }
+        ];
+
+        function populateCatalog() {
+            const select = document.getElementById('catalogSelect');
+            CATALOG.forEach((item, index) => {
+                let opt = document.createElement('option');
+                opt.value = index;
+                opt.textContent = item.title;
+                select.appendChild(opt);
+            });
+        }
+
+        function loadFromCatalog() {
+            const selectedIndex = document.getElementById('catalogSelect').value;
+            if (selectedIndex === "") return;
+
+            const show = CATALOG[selectedIndex];
+            
+            document.getElementById('typeInput').value = show.type;
+            toggleType(show.type);
+            document.getElementById('slugInput').value = show.slug;
+
+            if (show.type === 'tv') {
+                document.getElementById('seasonsCountInput').value = show.seasons.length;
+                const maxEps = Math.max(...show.seasons.map(s => s.episodes));
+                document.getElementById('epCountInput').value = maxEps;
+            }
+
+            generateInterface(false, show);
+        }
+
+        function toggleType(type) {
+            currentType = type;
+            document.getElementById('seasonGroup').classList.toggle('hidden', type === 'movie');
+            document.getElementById('epCountGroup').classList.toggle('hidden', type === 'movie');
+        }
+
+        function toggleAdvanced() {
+            const content = document.getElementById('advancedContent');
+            const icon = document.getElementById('advIcon');
+            content.classList.toggle('active');
+            icon.textContent = content.classList.contains('active') ? '▼' : '▶';
+        }
+
+        function formatNum(num) {
+            return String(num).padStart(2, '0');
+        }
+
+        function buildURL(slug, type, season, episode, server) {
+            let url = BASE_URL + slug;
+            if (type === 'tv') {
+                url += `-s${formatNum(season)}e${formatNum(episode)}/`;
+            } else {
+                url += "/"; 
+            }
+            url += `?serv=${server}`;
+            return url;
+        }
+
+        function generateInterface(isManual = true, showData = null) {
+            const seasonSelect = document.getElementById('seasonSelect');
+            const epSelect = document.getElementById('episodeSelect');
+            const defaultServ = document.getElementById('defaultServInput').value || 1;
+            
+            seasonSelect.innerHTML = '';
+            epSelect.innerHTML = '';
+
+            const type = isManual ? document.getElementById('typeInput').value : showData.type;
+            currentType = type;
+            toggleType(type);
+
+            if (type === 'tv') {
+                if (isManual) {
+                    const seasonsCount = document.getElementById('seasonsCountInput').value;
+                    const maxEps = document.getElementById('epCountInput').value;
+                    
+                    for (let s = 1; s <= seasonsCount; s++) {
+                        let opt = document.createElement('option');
+                        opt.value = s;
+                        opt.textContent = 'الموسم ' + s;
+                        seasonSelect.appendChild(opt);
+                    }
+                    for (let e = 1; e <= maxEps; e++) {
+                        let opt = document.createElement('option');
+                        opt.value = e;
+                        opt.textContent = 'الحلقة ' + e;
+                        epSelect.appendChild(opt);
+                    }
+                } else {
+                    showData.seasons.forEach(season => {
+                        let opt = document.createElement('option');
+                        opt.value = season.number;
+                        opt.textContent = 'الموسم ' + season.number;
+                        seasonSelect.appendChild(opt);
+                    });
+                    renderEpisodes(showData.seasons[0].episodes);
+                }
+            } else {
+                let opt = document.createElement('option');
+                opt.value = 1;
+                opt.textContent = 'الفيلم كامل';
+                epSelect.appendChild(opt);
+            }
+
+            document.getElementById('serverSelect').value = defaultServ;
+            updatePlayer();
+        }
+
+        function renderEpisodes(forcedMaxEps = null) {
+            const epSelect = document.getElementById('episodeSelect');
+            const selectedSeason = document.getElementById('seasonSelect').value;
+            epSelect.innerHTML = '';
+
+            let maxEps = 0;
+
+            if (forcedMaxEps) {
+                maxEps = forcedMaxEps;
+            } else {
+                const selectedIndex = document.getElementById('catalogSelect').value;
+                if (selectedIndex !== "") {
+                    const show = CATALOG[selectedIndex];
+                    const seasonData = show.seasons.find(s => s.number == selectedSeason);
+                    if (seasonData) maxEps = seasonData.episodes;
+                } else {
+                    maxEps = document.getElementById('epCountInput').value;
+                }
+            }
+
+            for (let e = 1; e <= maxEps; e++) {
+                let opt = document.createElement('option');
+                opt.value = e;
+                opt.textContent = 'الحلقة ' + e;
+                epSelect.appendChild(opt);
+            }
+            updatePlayer();
+        }
+
+        function updatePlayer() {
+            const slug = document.getElementById('slugInput').value.trim();
+            const server = document.getElementById('serverSelect').value;
+            let season = 1;
+            let episode = 1;
+
+            if (currentType === 'tv') {
+                season = document.getElementById('seasonSelect').value || 1;
+                episode = document.getElementById('episodeSelect').value || 1;
+            }
+
+            const url = buildURL(slug, currentType, season, episode, server);
+            videoFrame.src = url;
+            document.getElementById('urlDisplay').textContent = url;
+        }
+
+        function copyURL() {
+            const urlText = document.getElementById('urlDisplay').textContent;
+            if (urlText === 'الرابط سيظهر هنا...') return;
+
+            navigator.clipboard.writeText(urlText).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ تم النسخ';
+                setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+            }).catch(err => {
+                alert('فشل النسخ، انسخه يدوياً: ' + urlText);
+            });
+        }
+
+        // بدء تشغيل التطبيق
+        function populateServers() {
+            const serverSelect = document.getElementById('serverSelect');
+            serverSelect.innerHTML = '';
+            for(let i=1; i<=10; i++) {
+                let opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = 'السيرفر ' + i;
+                serverSelect.appendChild(opt);
+            }
+        }
+
+        populateServers();
+        populateCatalog();
+        // تفعيل أول عنصر كافتراضي (وادي الذئاب)
+        document.getElementById('catalogSelect').value = 0;
+        loadFromCatalog();
+    </script>
+</body>
+</html>
