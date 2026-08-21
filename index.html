@@ -67,6 +67,7 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
 .under-player-controls .custom-select{flex:1;padding:8px 12px;font-size:0.85rem}
 .nav-btn{padding:8px 14px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.8rem;transition:var(--transition);white-space:nowrap}
 .nav-btn:hover{background:rgba(62,166,255,0.1);border-color:var(--accent-primary);color:var(--accent-primary)}
+.nav-btn.disabled{opacity:0.4;cursor:not-allowed;pointer-events:none;border-color:var(--border-color);color:var(--text-muted)}
 .nav-btn.fav-btn{color:var(--text-muted)}
 .nav-btn.fav-btn.active{color:var(--accent-secondary);border-color:var(--accent-secondary);background:rgba(255,107,107,0.1)}
 
@@ -306,8 +307,16 @@ const UI = {
         Engine.load(); 
       }
     });
-    this.els.seasonSelect.addEventListener("change", e => { State.set({season: parseInt(e.target.value)}); this.renderEpisodes(); Engine.load(); });
-    this.els.episodeSelect.addEventListener("change", e => { State.set({episode: parseInt(e.target.value)}); Engine.load(); });
+    this.els.seasonSelect.addEventListener("change", e => { 
+      State.set({season: parseInt(e.target.value), episode: 1}); 
+      this.renderEpisodes(); 
+      Engine.load(); 
+    });
+    this.els.episodeSelect.addEventListener("change", e => { 
+      State.set({episode: parseInt(e.target.value)}); 
+      this.updateNavState();
+      Engine.load(); 
+    });
     this.els.serverSelect.addEventListener("change", e => { this.setServer(parseInt(e.target.value)); });
     
     this.els.applyBtn.addEventListener("click", () => Engine.load());
@@ -325,7 +334,7 @@ const UI = {
       this.renderAdvEpisodeInputs(parseInt(e.target.value));
     });
 
-    // 1- زر سحب: نقل المعلومات للمكتبة مع التشغيل
+    // زر سحب: نقل المعلومات للمكتبة مع التشغيل
     this.els.advFetchBtn.addEventListener("click", () => {
       const type = this.els.advTypeSelect.value;
       const slug = this.els.advNameInput.value.trim() || "custom-show";
@@ -352,13 +361,13 @@ const UI = {
       alert("تم سحب البيانات وإضافتها للمكتبة وتشغيلها بنجاح!");
     });
 
-    // 2- زر مسح السجلات
+    // زر مسح السجلات
     this.els.advClearBtn.addEventListener("click", () => {
       localStorage.clear();
       alert("تم مسح جميع سجلات المشاهدة والمفضلة بنجاح!");
     });
 
-    // 3- زر إعادة ضبط الإعدادات المتقدمة لبيانات افتراضية
+    // زر إعادة ضبط الإعدادات المتقدمة لبيانات افتراضية
     this.els.advResetBtn.addEventListener("click", () => {
       this.fillAdvDefaults();
       alert("تمت إعادة ضبط الإعدادات المتقدمة إلى البيانات الافتراضية!");
@@ -427,8 +436,9 @@ const UI = {
       this.els.prevEpBtn.classList.remove("hidden");
       this.els.nextEpBtn.classList.remove("hidden");
       
+      const firstSeasonNum = show.seasons[0] ? show.seasons[0].n : 1;
       this.els.seasonSelect.innerHTML = show.seasons.map(s => `<option value="${s.n}">الموسم ${s.n}</option>`).join('');
-      State.set({season: show.seasons[0].n, episode: 1});
+      State.set({season: firstSeasonNum, episode: 1});
       this.renderEpisodes();
     }
   },
@@ -441,15 +451,69 @@ const UI = {
     for(let i=1; i<=eps; i++) opts += `<option value="${i}">الحلقة ${i}</option>`;
     this.els.episodeSelect.innerHTML = opts;
     this.els.episodeSelect.value = st.episode;
+    this.updateNavState();
+  },
+  updateNavState(){
+    const st = State.get();
+    if(st.type === "movie") return;
+
+    const seasons = st.currentShow.seasons;
+    const firstSeasonNum = seasons[0] ? seasons[0].n : 1;
+    const lastSeasonObj = seasons[seasons.length - 1];
+    
+    // تعتيم/تعطيل زر السابق إذا كان الشخص في الموسم الأول، الحلقة الأولى
+    const isFirstEpOfFirstSeason = (st.season === firstSeasonNum && st.episode === 1);
+    this.els.prevEpBtn.classList.toggle("disabled", isFirstEpOfFirstSeason);
+
+    // تعتيم زر التالي إذا كان الشخص في الموسم الأخير، الحلقة الأخيرة
+    const isLastEpOfLastSeason = (lastSeasonObj && st.season === lastSeasonObj.n && st.episode === lastSeasonObj.eps);
+    this.els.nextEpBtn.classList.toggle("disabled", isLastEpOfLastSeason);
   },
   navEp(delta){
     const st = State.get();
     if(st.type === "movie") return;
-    let newEp = st.episode + delta;
-    if(newEp >= 1){
-      State.set({episode: newEp});
-      this.els.episodeSelect.value = newEp;
-      Engine.load();
+
+    const seasons = st.currentShow.seasons;
+    const currentSeasonIdx = seasons.findIndex(s => s.n === st.season);
+    if(currentSeasonIdx === -1) return;
+
+    const currentSeasonObj = seasons[currentSeasonIdx];
+    let targetEp = st.episode + delta;
+
+    if(delta === -1){
+      // الضغط على السابق
+      if(targetEp < 1){
+        if(currentSeasonIdx > 0){
+          // الانتقال لآخر حلقة في الموسم السابق
+          const prevSeasonObj = seasons[currentSeasonIdx - 1];
+          State.set({season: prevSeasonObj.n, episode: prevSeasonObj.eps});
+          this.els.seasonSelect.value = prevSeasonObj.n;
+          this.renderEpisodes();
+          Engine.load();
+        }
+      } else {
+        State.set({episode: targetEp});
+        this.els.episodeSelect.value = targetEp;
+        this.updateNavState();
+        Engine.load();
+      }
+    } else if(delta === 1){
+      // الضغط على التالي
+      if(targetEp > currentSeasonObj.eps){
+        if(currentSeasonIdx < seasons.length - 1){
+          // الانتقال للحلقة الأولى في الموسم التالي
+          const nextSeasonObj = seasons[currentSeasonIdx + 1];
+          State.set({season: nextSeasonObj.n, episode: 1});
+          this.els.seasonSelect.value = nextSeasonObj.n;
+          this.renderEpisodes();
+          Engine.load();
+        }
+      } else {
+        State.set({episode: targetEp});
+        this.els.episodeSelect.value = targetEp;
+        this.updateNavState();
+        Engine.load();
+      }
     }
   }
 };
