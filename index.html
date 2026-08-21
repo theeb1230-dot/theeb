@@ -12,6 +12,7 @@
   --bg-primary:#0a0a0f; --bg-secondary:#12121a; --bg-tertiary:#1a1a25;
   --bg-card:rgba(30,30,45,0.8); --border-color:rgba(255,255,255,0.06);
   --accent-primary:#3ea6ff; --accent-secondary:#ff6b6b; --accent-success:#51cf66;
+  --accent-warning:#fcc419;
   --text-primary:#f1f1f1; --text-secondary:#a0a0b0;
   --text-muted:#6c6c80; --shadow-glow:0 0 30px rgba(62,166,255,0.2);
   --radius:12px; --transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
@@ -38,7 +39,9 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
 /* وضع الجوال العمودي */
 .dashboard-wrapper.mobile-mode{display:flex;flex-direction:column}
 .dashboard-wrapper.mobile-mode .player-section{order:1}
-.dashboard-wrapper.mobile-mode .controls-sidebar{order:2;max-height:none}
+.dashboard-wrapper.mobile-mode .sidebar-container{order:2;max-height:none}
+
+.sidebar-container{display:flex;flex-direction:column;gap:12px;grid-column:1;grid-row:1}
 
 /* منطقة المشغل */
 .player-section{display:flex;flex-direction:column;gap:8px;grid-column:2;grid-row:1;height:100%;justify-content:flex-start}
@@ -67,34 +70,44 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
 .nav-btn.fav-btn{color:var(--text-muted)}
 .nav-btn.fav-btn.active{color:var(--accent-secondary);border-color:var(--accent-secondary);background:rgba(255,107,107,0.1)}
 
-/* لوحة التحكم الجانبية */
-.controls-sidebar{grid-column:1;grid-row:1;background:var(--bg-card);backdrop-filter:blur(20px);border:1px solid var(--border-color);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:10px;height:100%;max-height:calc(100vh - 85px);overflow-y:auto}
-.sidebar-title{font-size:0.95rem;font-weight:800;display:flex;align-items:center;gap:6px;color:var(--text-primary)}
+/* البطاقات الجانبية */
+.card-panel{background:var(--bg-card);backdrop-filter:blur(20px);border:1px solid var(--border-color);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:8px}
+.sidebar-title{font-size:0.9rem;font-weight:800;display:flex;align-items:center;gap:6px;color:var(--text-primary);padding-bottom:4px;border-bottom:1px solid var(--border-color)}
 .sidebar-title i{color:var(--accent-primary)}
-.control-group{display:flex;flex-direction:column;gap:4px}
-.control-label{font-size:0.75rem;color:var(--text-secondary);font-weight:600}
-.custom-select,.form-input{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);padding:8px 12px;border-radius:8px;font-size:0.8rem;font-family:inherit;cursor:pointer;width:100%;outline:none;transition:var(--transition);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a0b0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 10px center}
+
+.control-group{display:flex;flex-direction:column;gap:3px}
+.control-label{font-size:0.72rem;color:var(--text-secondary);font-weight:600}
+.custom-select,.form-input{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);padding:7px 10px;border-radius:8px;font-size:0.78rem;font-family:inherit;cursor:pointer;width:100%;outline:none;transition:var(--transition);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a0b0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 10px center}
 .form-input{background-image:none}
 .custom-select:hover,.form-input:hover,.custom-select:focus,.form-input:focus{border-color:var(--accent-primary)}
-.btn-primary{padding:10px;background:linear-gradient(135deg,var(--accent-primary),#2563eb);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:800;font-family:inherit;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px}
+
+.btn-primary{padding:9px;background:linear-gradient(135deg,var(--accent-primary),#2563eb);color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:800;font-family:inherit;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(62,166,255,0.3)}
 
 /* لوحة الرابط وأزرار النسخ والإرسال */
-.url-panel{background:rgba(0,0,0,0.3);border:1px dashed rgba(62,166,255,0.25);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;margin-top:auto}
+.url-panel{background:rgba(0,0,0,0.3);border:1px dashed rgba(62,166,255,0.25);border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:6px}
 .url-text{width:100%;color:var(--accent-primary);word-break:break-all;font-family:monospace;font-size:0.6rem;direction:ltr;text-align:center;max-height:35px;overflow-y:auto}
 .url-actions{display:flex;gap:6px}
 .btn-sec{flex:1;padding:6px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:0.75rem;font-family:inherit;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:var(--transition)}
 .btn-sec:hover{background:rgba(62,166,255,0.15);border-color:var(--accent-primary);color:var(--accent-primary)}
 
-/* الإعدادات المتقدمة */
-.advanced-box{background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;margin-top:4px}
-.advanced-title{font-size:0.75rem;font-weight:800;color:var(--text-secondary);display:flex;align-items:center;gap:4px}
+/* الإعدادات المتقدمة الأزرار الثلاثة */
+.adv-actions{display:flex;gap:4px;margin-top:4px}
+.btn-adv{flex:1;padding:6px 4px;font-size:0.7rem;font-weight:700;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;transition:var(--transition)}
+.btn-adv.fetch{background:rgba(81,207,102,0.15);border-color:var(--accent-success);color:var(--accent-success)}
+.btn-adv.fetch:hover{background:var(--accent-success);color:#000}
+.btn-adv.clear{background:rgba(255,107,107,0.15);border-color:var(--accent-secondary);color:var(--accent-secondary)}
+.btn-adv.clear:hover{background:var(--accent-secondary);color:#fff}
+.btn-adv.reset{background:rgba(252,196,25,0.15);border-color:var(--accent-warning);color:var(--accent-warning)}
+.btn-adv.reset:hover{background:var(--accent-warning);color:#000}
+
+.episodes-inputs-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;max-height:120px;overflow-y:auto;padding-right:2px}
 
 .hidden{display:none!important}
 @media(max-width:900px){
   .dashboard-wrapper{grid-template-columns:1fr;height:auto;display:flex;flex-direction:column}
   .player-section{order:1}
-  .controls-sidebar{order:2;max-height:none}
+  .sidebar-container{order:2}
 }
 </style>
 </head>
@@ -106,7 +119,6 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
   <div class="header-actions">
     <div class="status-indicator"><div class="status-dot"></div><span>متصل</span></div>
     <button class="icon-btn" id="favListBtn" title="المفضلة"><i class="fas fa-heart"></i></button>
-    <!-- زر وضع الجوال العمودي الجديد -->
     <button class="icon-btn" id="mobileModeBtn" title="وضع الجوال العمودي"><i class="fas fa-mobile-alt"></i></button>
     <button class="icon-btn" id="historyBtn" title="سجل المشاهدة"><i class="fas fa-history"></i></button>
     <button class="icon-btn" id="fullscreenBtn" title="تكبير الشاشة"><i class="fas fa-expand"></i></button>
@@ -115,9 +127,86 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
 
 <div class="dashboard-wrapper" id="mainLayout">
   
+  <!-- الحاوية الجانبية: لوحة التحكم والإعدادات المتقدمة -->
+  <div class="sidebar-container">
+    
+    <!-- لوحة التحكم الأساسية -->
+    <aside class="card-panel">
+      <div class="sidebar-title"><i class="fas fa-sliders-h"></i> لوحة التحكم</div>
+      
+      <div class="control-group" id="seasonGroup">
+        <label class="control-label">الموسم</label>
+        <select id="seasonSelect" class="custom-select"></select>
+      </div>
+      
+      <div class="control-group" id="episodeGroup">
+        <label class="control-label">الحلقة</label>
+        <select id="episodeSelect" class="custom-select"></select>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label">السيرفر</label>
+        <select id="serverSelect" class="custom-select"></select>
+      </div>
+      
+      <button class="btn-primary" id="applyBtn"><i class="fas fa-sync-alt"></i> تحديث</button>
+
+      <!-- لوحة الرابط والنسخ والإرسال -->
+      <div class="url-panel">
+        <div class="url-text" id="urlDisplay">...</div>
+        <div class="url-actions">
+          <button class="btn-sec" id="copyUrlBtn"><i class="fas fa-copy"></i> نسخ</button>
+          <button class="btn-sec" id="openUrlBtn"><i class="fas fa-external-link-alt"></i> إرسال</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- قائمة منفصلة للإعدادات المتقدمة -->
+    <aside class="card-panel">
+      <div class="sidebar-title"><i class="fas fa-cogs"></i> الإعدادات المتقدمة</div>
+      
+      <!-- 1. النوع -->
+      <div class="control-group">
+        <label class="control-label">1- النوع</label>
+        <select id="advTypeSelect" class="custom-select">
+          <option value="tv">مسلسل</option>
+          <option value="movie">فيلم</option>
+        </select>
+      </div>
+
+      <!-- 2. الاسم (slug) -->
+      <div class="control-group">
+        <label class="control-label">2- الاسم (Slug)</label>
+        <input type="text" id="advNameInput" class="form-input" placeholder="مثال: cukur">
+      </div>
+
+      <!-- 3. عدد المواسم (حد أقصى 9) -->
+      <div class="control-group" id="advSeasonCountGroup">
+        <label class="control-label">3- عدد المواسم (حد أقصى 9)</label>
+        <select id="advSeasonCountSelect" class="custom-select">
+          <!-- ديناميكي من 1 إلى 9 -->
+        </select>
+      </div>
+
+      <!-- 4. عدد الحلقات لكل موسم -->
+      <div class="control-group" id="advEpisodesGroup">
+        <label class="control-label">4- عدد الحلقات لكل موسم</label>
+        <div class="episodes-inputs-grid" id="advEpisodesContainer"></div>
+      </div>
+
+      <!-- الثلاث أزرار الجدد -->
+      <div class="adv-actions">
+        <button class="btn-adv fetch" id="advFetchBtn" title="سحب للمكتبة وتشغيل"><i class="fas fa-download"></i> سحب</button>
+        <button class="btn-adv clear" id="advClearBtn" title="مسح السجلات"><i class="fas fa-trash-alt"></i> مسح</button>
+        <button class="btn-adv reset" id="advResetBtn" title="إعادة ضبط افتراضي"><i class="fas fa-undo"></i> إعادة ضبط</button>
+      </div>
+    </aside>
+
+  </div>
+
   <!-- منطقة المشغل الرئيسية -->
   <section class="player-section">
-    <!-- شريط السيرفرات السريع (حتى 10 سيرفرات) -->
+    <!-- شريط السيرفرات السريع -->
     <div class="quick-servers-bar" id="quickServersBar"></div>
 
     <div class="player-wrapper" id="playerWrapper">
@@ -139,70 +228,39 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
     </div>
   </section>
 
-  <!-- لوحة التحكم الجانبية -->
-  <aside class="controls-sidebar">
-    <div class="sidebar-title"><i class="fas fa-sliders-h"></i> لوحة التحكم</div>
-    
-    <div class="control-group">
-      <label class="control-label">الموسم</label>
-      <select id="seasonSelect" class="custom-select"></select>
-    </div>
-    
-    <div class="control-group">
-      <label class="control-label">الحلقة</label>
-      <select id="episodeSelect" class="custom-select"></select>
-    </div>
-    
-    <div class="control-group">
-      <label class="control-label">السيرفر</label>
-      <select id="serverSelect" class="custom-select"></select>
-    </div>
-    
-    <button class="btn-primary" id="applyBtn" style="margin-top:2px"><i class="fas fa-sync-alt"></i> تحديث</button>
-    
-    <!-- قسم الإعدادات المتقدمة (مسترجع) -->
-    <div class="advanced-box">
-      <div class="advanced-title"><i class="fas fa-cogs"></i> إعدادات متقدمة</div>
-      <div class="control-group">
-        <label class="control-label">البادئة Custom Slug</label>
-        <input type="text" id="customSlugInput" class="form-input" placeholder="اختياري (مثال: cukur)">
-      </div>
-    </div>
-
-    <!-- لوحة الرابط وأزرار نسخ/إرسال (مسترجعة) -->
-    <div class="url-panel">
-      <div class="url-text" id="urlDisplay">...</div>
-      <div class="url-actions">
-        <button class="btn-sec" id="copyUrlBtn"><i class="fas fa-copy"></i> نسخ</button>
-        <button class="btn-sec" id="openUrlBtn"><i class="fas fa-external-link-alt"></i> إرسال</button>
-      </div>
-    </div>
-  </aside>
-
 </div>
 
 <script>
 const CFG = {
   BASE_URL: "https://w.anaplayer.online/albaplayer/",
-  MAX_SERVERS: 10, // تم زيادة الحد الأقصى إلى 10
+  MAX_SERVERS: 9,
   BUILD_URL: (base, slug, type, season, episode, server) => {
     const epPath = type === "tv" ? `-s${String(season).padStart(2, "0")}e${String(episode).padStart(2, "0")}` : "";
     return `${base}${slug}${epPath}/?serv=${server}`;
   }
 };
 
-const DB = [
-  {title:"حفر (Cukur)",slug:"cukur",type:"tv",seasons:[{n:1,eps:33},{n:2,eps:34},{n:3,eps:26},{n:4,eps:39}]},
-  {title:"الذئب الوحيد (Yalniz Kurt)",slug:"yalniz-kurt",type:"tv",seasons:[{n:1,eps:28},{n:2,eps:32}]},
-  {title:"وادي الذئاب (Kurtlar Vadisi Pusu)",slug:"kurtlar-vadisi-pusu",type:"tv",seasons:[{n:1,eps:9},{n:2,eps:32},{n:3,eps:22}]},
-  {title:"المنظمة (Teskilat)",slug:"teskilat",type:"tv",seasons:[{n:1,eps:184}]},
-  {title:"ثلاث قروش (Uc Kurus)",slug:"uc-kurus",type:"tv",seasons:[{n:1,eps:28}]},
-  {title:"رامو (Ramo)",slug:"ramo",type:"tv",seasons:[{n:1,eps:40}]},
-  {title:"المؤسس عثمان",slug:"kurulus-osman",type:"tv",seasons:[{n:1,eps:194}]}
+let DB = [
+  // --- المسلسلات (TV) ---
+  {title:"وادي الذئاب (Kurtlar Vadisi Pusu)", slug:"kurtlar-vadisi-pusu", type:"tv", seasons:[{n:1,eps:9},{n:2,eps:32},{n:3,eps:22}]},
+  {title:"المنظمة (Teskilat)", slug:"teskilat", type:"tv", seasons:[{n:1,eps:184}]},
+  {title:"ثلاث قروش (Uc Kurus)", slug:"uc-kurus", type:"tv", seasons:[{n:1,eps:28}]},
+  {title:"رامو (Ramo)", slug:"ramo", type:"tv", seasons:[{n:1,eps:40}]},
+  {title:"قطاع طرق لن يحكموا العالم (Eskiya Dunyaya)", slug:"eskiya-dunyaya-hukumdar-olmaz", type:"tv", seasons:[{n:1,eps:40},{n:2,eps:31},{n:3,eps:36},{n:4,eps:32},{n:5,eps:26},{n:6,eps:34}]},
+  {title:"قيامة أرطغرل (Dirilis Ertugrul)", slug:"dirilis-ertugrul", type:"tv", seasons:[{n:1,eps:150}]},
+  {title:"المؤسس عثمان (Kurulus Osman)", slug:"kurulus-osman", type:"tv", seasons:[{n:1,eps:194}]},
+  {title:"حفر (Cukur)", slug:"cukur", type:"tv", seasons:[{n:1,eps:33},{n:2,eps:34},{n:3,eps:26},{n:4,eps:39}]},
+  {title:"الذئب الوحيد (Yalniz Kurt)", slug:"yalniz-kurt", type:"tv", seasons:[{n:1,eps:32}]},
+
+  // --- الأفلام (Movies) ---
+  {title:"🎬 فيلم وادي الذئاب غلاديو (2009)", slug:"kurtlar-vadisi-gladstatus", type:"movie"},
+  {title:"🎬 فيلم وادي الذئاب الوطن (2017)", slug:"kurtlar-vadisi-vatan", type:"movie"},
+  {title:"🎬 فيلم وادي الذئاب فلسطين (2011)", slug:"kurtlar-vadisi-filistin", type:"movie"},
+  {title:"🎬 فيلم وادي الذئاب العراق (2006)", slug:"kurtlar-vadisi-irak", type:"movie"}
 ];
 
 const State = {
-  data: {type:"tv", slug:"cukur", season:1, episode:1, server:1, currentShow:DB[0]},
+  data: {type:"tv", slug:"kurtlar-vadisi-pusu", season:1, episode:1, server:1, currentShow:DB[0]},
   get(){return this.data},
   set(u){Object.assign(this.data, u)}
 };
@@ -213,18 +271,37 @@ const UI = {
     this.cache();
     this.renderCatalog();
     this.renderServers();
+    this.initAdvSeasonSelect();
     this.bind();
     this.loadShow(DB[0]);
+    this.fillAdvDefaults();
   },
   cache(){
-    ["videoPlayer","playerOverlay","catalogSelect","seasonSelect","episodeSelect","serverSelect","urlDisplay","quickServersBar","applyBtn","prevEpBtn","nextEpBtn","fullscreenBtn","copyUrlBtn","openUrlBtn","mobileModeBtn","mainLayout","customSlugInput"].forEach(id => this.els[id] = document.getElementById(id));
+    ["videoPlayer","playerOverlay","catalogSelect","seasonSelect","episodeSelect","serverSelect","urlDisplay","quickServersBar","applyBtn","prevEpBtn","nextEpBtn","fullscreenBtn","copyUrlBtn","openUrlBtn","mobileModeBtn","mainLayout","seasonGroup","episodeGroup","advTypeSelect","advNameInput","advSeasonCountSelect","advSeasonCountGroup","advEpisodesGroup","advEpisodesContainer","advFetchBtn","advClearBtn","advResetBtn"].forEach(id => this.els[id] = document.getElementById(id));
+  },
+  initAdvSeasonSelect(){
+    let opts = '';
+    for(let i=1; i<=9; i++) opts += `<option value="${i}">الموسم ${i}</option>`;
+    this.els.advSeasonCountSelect.innerHTML = opts;
+    this.renderAdvEpisodeInputs(1);
+  },
+  renderAdvEpisodeInputs(count){
+    let html = '';
+    for(let i=1; i<=count; i++){
+      html += `
+        <div class="control-group">
+          <label class="control-label">حلقات مـ ${i}</label>
+          <input type="number" min="1" value="10" class="form-input adv-ep-input" data-season="${i}">
+        </div>
+      `;
+    }
+    this.els.advEpisodesContainer.innerHTML = html;
   },
   bind(){
     this.els.catalogSelect.addEventListener("change", e => {
       const show = DB[e.target.value];
       if(show){ 
         State.set({currentShow:show, slug:show.slug, type:show.type}); 
-        this.els.customSlugInput.value = "";
         this.loadShow(show); 
         Engine.load(); 
       }
@@ -232,22 +309,70 @@ const UI = {
     this.els.seasonSelect.addEventListener("change", e => { State.set({season: parseInt(e.target.value)}); this.renderEpisodes(); Engine.load(); });
     this.els.episodeSelect.addEventListener("change", e => { State.set({episode: parseInt(e.target.value)}); Engine.load(); });
     this.els.serverSelect.addEventListener("change", e => { this.setServer(parseInt(e.target.value)); });
-    this.els.customSlugInput.addEventListener("input", e => { if(e.target.value.trim()) State.set({slug: e.target.value.trim()}); });
     
     this.els.applyBtn.addEventListener("click", () => Engine.load());
     this.els.nextEpBtn.addEventListener("click", () => this.navEp(1));
     this.els.prevEpBtn.addEventListener("click", () => this.navEp(-1));
     
-    // زر وضع الجوال
+    // أحداث الإعدادات المتقدمة المنفصلة
+    this.els.advTypeSelect.addEventListener("change", e => {
+      const isMovie = e.target.value === "movie";
+      this.els.advSeasonCountGroup.classList.toggle("hidden", isMovie);
+      this.els.advEpisodesGroup.classList.toggle("hidden", isMovie);
+    });
+
+    this.els.advSeasonCountSelect.addEventListener("change", e => {
+      this.renderAdvEpisodeInputs(parseInt(e.target.value));
+    });
+
+    // 1- زر سحب: نقل المعلومات للمكتبة مع التشغيل
+    this.els.advFetchBtn.addEventListener("click", () => {
+      const type = this.els.advTypeSelect.value;
+      const slug = this.els.advNameInput.value.trim() || "custom-show";
+      const title = (type === "movie" ? "🎬 فيلم " : "📺 ") + slug;
+
+      let seasons = [];
+      if(type === "tv"){
+        const sCount = parseInt(this.els.advSeasonCountSelect.value);
+        const epInputs = document.querySelectorAll('.adv-ep-input');
+        epInputs.forEach((inp, idx) => {
+          if(idx < sCount){
+            seasons.push({n: idx+1, eps: parseInt(inp.value) || 10});
+          }
+        });
+      }
+
+      const newItem = { title, slug, type, seasons };
+      DB.unshift(newItem); // إضافة للبداية
+      this.renderCatalog();
+      this.els.catalogSelect.value = 0;
+      State.set({currentShow: newItem, slug: newItem.slug, type: newItem.type});
+      this.loadShow(newItem);
+      Engine.load();
+      alert("تم سحب البيانات وإضافتها للمكتبة وتشعيلها بنجاح!");
+    });
+
+    // 2- زر مسح السجلات
+    this.els.advClearBtn.addEventListener("click", () => {
+      localStorage.clear();
+      alert("تم مسح جميع سجلات المشاهدة والمفضلة بنجاح!");
+    });
+
+    // 3- زر إعادة ضبط الإعدادات المتقدمة لبيانات افتراضية شارحة
+    this.els.advResetBtn.addEventListener("click", () => {
+      this.fillAdvDefaults();
+      alert("تمت إعادة ضبط الإعدادات المتقدمة إلى البيانات الشارحة الافتراضية!");
+    });
+
+    // وضع الجوال
     this.els.mobileModeBtn.addEventListener("click", () => {
       this.els.mainLayout.classList.toggle("mobile-mode");
       this.els.mobileModeBtn.classList.toggle("active");
     });
 
-    // أزرار النسخ والإرسال
+    // النسخ والإرسال
     this.els.copyUrlBtn.addEventListener("click", () => {
-      const txt = this.els.urlDisplay.textContent;
-      navigator.clipboard.writeText(txt).then(() => alert("تم نسخ الرابط!"));
+      navigator.clipboard.writeText(this.els.urlDisplay.textContent).then(() => alert("تم نسخ الرابط!"));
     });
     this.els.openUrlBtn.addEventListener("click", () => {
       window.open(this.els.urlDisplay.textContent, "_blank");
@@ -257,6 +382,17 @@ const UI = {
       const el = document.getElementById('playerWrapper');
       if(!document.fullscreenElement) el.requestFullscreen(); else document.exitFullscreen();
     });
+  },
+  fillAdvDefaults(){
+    this.els.advTypeSelect.value = "tv";
+    this.els.advTypeSelect.dispatchEvent(new Event('change'));
+    this.els.advNameInput.value = "kurtlar-vadisi-pusu";
+    this.els.advSeasonCountSelect.value = "3";
+    this.renderAdvEpisodeInputs(3);
+    const inputs = document.querySelectorAll('.adv-ep-input');
+    if(inputs[0]) inputs[0].value = 9;
+    if(inputs[1]) inputs[1].value = 32;
+    if(inputs[2]) inputs[2].value = 22;
   },
   renderCatalog(){
     this.els.catalogSelect.innerHTML = DB.map((item, idx) => `<option value="${idx}">${item.title}</option>`).join('');
@@ -280,12 +416,25 @@ const UI = {
     Engine.load();
   },
   loadShow(show){
-    this.els.seasonSelect.innerHTML = show.seasons.map(s => `<option value="${s.n}">الموسم ${s.n}</option>`).join('');
-    State.set({season: show.seasons[0].n, episode: 1});
-    this.renderEpisodes();
+    if(show.type === "movie"){
+      this.els.seasonGroup.classList.add("hidden");
+      this.els.episodeGroup.classList.add("hidden");
+      this.els.prevEpBtn.classList.add("hidden");
+      this.els.nextEpBtn.classList.add("hidden");
+    } else {
+      this.els.seasonGroup.classList.remove("hidden");
+      this.els.episodeGroup.classList.remove("hidden");
+      this.els.prevEpBtn.classList.remove("hidden");
+      this.els.nextEpBtn.classList.remove("hidden");
+      
+      this.els.seasonSelect.innerHTML = show.seasons.map(s => `<option value="${s.n}">الموسم ${s.n}</option>`).join('');
+      State.set({season: show.seasons[0].n, episode: 1});
+      this.renderEpisodes();
+    }
   },
   renderEpisodes(){
     const st = State.get();
+    if(st.type === "movie") return;
     const sd = st.currentShow.seasons.find(s => s.n === st.season);
     const eps = sd ? sd.eps : 10;
     let opts = '';
@@ -295,6 +444,7 @@ const UI = {
   },
   navEp(delta){
     const st = State.get();
+    if(st.type === "movie") return;
     let newEp = st.episode + delta;
     if(newEp >= 1){
       State.set({episode: newEp});
