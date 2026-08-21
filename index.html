@@ -184,7 +184,7 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
       <div class="control-group" id="advSeasonCountGroup">
         <label class="control-label">3- عدد المواسم (حد أقصى 9)</label>
         <select id="advSeasonCountSelect" class="custom-select">
-          <!-- ديناميكي من 1 إلى 9 -->
+          <!-- ديناميكي من 1 إلى 9 بالأرقام الإنجليزية -->
         </select>
       </div>
 
@@ -194,7 +194,7 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
         <div class="episodes-inputs-grid" id="advEpisodesContainer"></div>
       </div>
 
-      <!-- الثلاث أزرار الجدد -->
+      <!-- أزرار الإجراءات السريعة -->
       <div class="adv-actions">
         <button class="btn-adv fetch" id="advFetchBtn" title="سحب للمكتبة وتشغيل"><i class="fas fa-download"></i> سحب</button>
         <button class="btn-adv clear" id="advClearBtn" title="مسح السجلات"><i class="fas fa-trash-alt"></i> مسح</button>
@@ -242,15 +242,15 @@ const CFG = {
 
 let DB = [
   // --- المسلسلات (TV) ---
-  {title:"وادي الذئاب (Kurtlar Vadisi Pusu)", slug:"kurtlar-vadisi-pusu", type:"tv", seasons:[{n:1,eps:9},{n:2,eps:32},{n:3,eps:22}]},
-  {title:"المنظمة (Teskilat)", slug:"teskilat", type:"tv", seasons:[{n:1,eps:184}]},
-  {title:"ثلاث قروش (Uc Kurus)", slug:"uc-kurus", type:"tv", seasons:[{n:1,eps:28}]},
-  {title:"رامو (Ramo)", slug:"ramo", type:"tv", seasons:[{n:1,eps:40}]},
-  {title:"قطاع طرق لن يحكموا العالم (Eskiya Dunyaya)", slug:"eskiya-dunyaya-hukumdar-olmaz", type:"tv", seasons:[{n:1,eps:40},{n:2,eps:31},{n:3,eps:36},{n:4,eps:32},{n:5,eps:26},{n:6,eps:34}]},
-  {title:"قيامة أرطغرل (Dirilis Ertugrul)", slug:"dirilis-ertugrul", type:"tv", seasons:[{n:1,eps:150}]},
-  {title:"المؤسس عثمان (Kurulus Osman)", slug:"kurulus-osman", type:"tv", seasons:[{n:1,eps:194}]},
-  {title:"حفر (Cukur)", slug:"cukur", type:"tv", seasons:[{n:1,eps:33},{n:2,eps:34},{n:3,eps:26},{n:4,eps:39}]},
-  {title:"الذئب الوحيد (Yalniz Kurt)", slug:"yalniz-kurt", type:"tv", seasons:[{n:1,eps:32}]},
+  {title:"📺 مسلسل وادي الذئاب (Kurtlar Vadisi Pusu)", slug:"kurtlar-vadisi-pusu", type:"tv", seasons:[{n:1,eps:9},{n:2,eps:32},{n:3,eps:22}]},
+  {title:"📺 مسلسل المنظمة (Teskilat)", slug:"teskilat", type:"tv", seasons:[{n:1,eps:184}]},
+  {title:"📺 مسلسل ثلاث قروش (Uc Kurus)", slug:"uc-kurus", type:"tv", seasons:[{n:1,eps:28}]},
+  {title:"📺 مسلسل رامو (Ramo)", slug:"ramo", type:"tv", seasons:[{n:1,eps:40}]},
+  {title:"📺 مسلسل قطاع طرق لن يحكموا العالم (Eskiya Dunyaya)", slug:"eskiya-dunyaya-hukumdar-olmaz", type:"tv", seasons:[{n:1,eps:40},{n:2,eps:31},{n:3,eps:36},{n:4,eps:32},{n:5,eps:26},{n:6,eps:34}]},
+  {title:"📺 مسلسل قيامة أرطغرل (Dirilis Ertugrul)", slug:"dirilis-ertugrul", type:"tv", seasons:[{n:1,eps:150}]},
+  {title:"📺 مسلسل المؤسس عثمان (Kurulus Osman)", slug:"kurulus-osman", type:"tv", seasons:[{n:1,eps:194}]},
+  {title:"📺 مسلسل الحفرة (Cukur)", slug:"cukur", type:"tv", seasons:[{n:1,eps:33},{n:2,eps:34},{n:3,eps:26},{n:4,eps:39}]},
+  {title:"📺 مسلسل الذئب الوحيد (Yalniz Kurt)", slug:"yalniz-kurt", type:"tv", seasons:[{n:1,eps:32}]},
 
   // --- الأفلام (Movies) ---
   {title:"🎬 فيلم وادي الذئاب غلاديو (2009)", slug:"kurtlar-vadisi-gladstatus", type:"movie"},
@@ -329,7 +329,7 @@ const UI = {
     this.els.advFetchBtn.addEventListener("click", () => {
       const type = this.els.advTypeSelect.value;
       const slug = this.els.advNameInput.value.trim() || "custom-show";
-      const title = (type === "movie" ? "🎬 فيلم " : "📺 ") + slug;
+      const title = (type === "movie" ? "🎬 فيلم " : "📺 مسلسل ") + slug;
 
       let seasons = [];
       if(type === "tv"){
@@ -349,7 +349,7 @@ const UI = {
       State.set({currentShow: newItem, slug: newItem.slug, type: newItem.type});
       this.loadShow(newItem);
       Engine.load();
-      alert("تم سحب البيانات وإضافتها للمكتبة وتشعيلها بنجاح!");
+      alert("تم سحب البيانات وإضافتها للمكتبة وتشغيلها بنجاح!");
     });
 
     // 2- زر مسح السجلات
@@ -358,10 +358,10 @@ const UI = {
       alert("تم مسح جميع سجلات المشاهدة والمفضلة بنجاح!");
     });
 
-    // 3- زر إعادة ضبط الإعدادات المتقدمة لبيانات افتراضية شارحة
+    // 3- زر إعادة ضبط الإعدادات المتقدمة لبيانات افتراضية
     this.els.advResetBtn.addEventListener("click", () => {
       this.fillAdvDefaults();
-      alert("تمت إعادة ضبط الإعدادات المتقدمة إلى البيانات الشارحة الافتراضية!");
+      alert("تمت إعادة ضبط الإعدادات المتقدمة إلى البيانات الافتراضية!");
     });
 
     // وضع الجوال
