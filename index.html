@@ -31,12 +31,8 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Tajawal
 .bg-glow{position:fixed;width:800px;height:800px;background:radial-gradient(circle,rgba(62,166,255,0.06),transparent 70%);top:-300px;right:-300px;pointer-events:none;z-index:0;animation:float 20s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,50px)}}
 
-/* الحاوية الأساسية */
-.app-container{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
-body[data-mode="tv"] .app-container{grid-template-columns:1fr 400px}
-
-/* الهيدر (غير مثبت - يختفي عند النزول) */
-.app-header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding:16px 24px;background:var(--bg-card);backdrop-filter:blur(30px);border:1px solid var(--border-color);border-radius:var(--radius);position:relative;z-index:100;box-shadow:0 4px 30px rgba(0,0,0,0.3);transition:var(--transition);margin-bottom:10px}
+/* الشريط العلوي (يتحرك ويختفي عند النزول) */
+.app-header{max-width:1100px;margin:0 auto 15px auto;padding:16px 24px;background:var(--bg-card);backdrop-filter:blur(30px);border:1px solid var(--border-color);border-radius:var(--radius);position:relative;z-index:100;box-shadow:0 4px 30px rgba(0,0,0,0.3);transition:var(--transition)}
 .logo{display:flex;align-items:center;gap:12px;font-size:1.4rem;font-weight:900;color:var(--text-primary)}
 .logo i{color:var(--accent-primary);font-size:1.8rem;filter:drop-shadow(0 0 10px rgba(62,166,255,0.5))}
 .header-actions{display:flex;gap:10px;align-items:center}
@@ -48,11 +44,11 @@ body[data-mode="tv"] .app-container{grid-template-columns:1fr 400px}
 .status-dot{width:8px;height:8px;border-radius:50%;background:var(--accent-success);box-shadow:0 0 12px var(--accent-success);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
 
-/* قسم المشغل - مثبت دائماً */
-.player-section{display:flex;flex-direction:column;gap:16px;position:sticky;top:20px;background:var(--bg-primary);padding-bottom:10px;z-index:20}
-body[data-mode="tv"] .player-section{background:transparent}
-.player-wrapper{position:relative;background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border-color);box-shadow:0 30px 80px rgba(0,0,0,0.6)}
-.player-container{position:relative;width:100%;padding-bottom:56.25%;background:linear-gradient(135deg,#0a0a15,#1a1a30)}
+/* لوحة القيادة الثابتة (تثبت مكانها بعد اختفاء الشريط العلوي) */
+.dashboard-wrapper{position:sticky;top:0;height:100vh;max-width:1100px;margin:0 auto;padding:15px;display:grid;grid-template-columns:1fr 280px;grid-template-rows:minmax(0,1fr) auto;gap:20px;background:var(--bg-primary);z-index:50;overflow-y:auto}
+.player-section{display:flex;flex-direction:column;gap:15px;min-height:0}
+.player-wrapper{position:relative;width:100%;max-height:100%;aspect-ratio:16/9;margin:auto 0;background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border-color);box-shadow:0 30px 80px rgba(0,0,0,0.6)}
+.player-container{position:absolute;inset:0}
 .player-container iframe{position:absolute;inset:0;width:100%;height:100%;border:none;opacity:0;transition:opacity 0.6s ease}
 .player-container iframe.loaded{opacity:1}
 .player-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;background:linear-gradient(135deg,rgba(10,10,15,0.97),rgba(26,26,37,0.97));z-index:10;transition:opacity 0.5s,visibility 0.5s}
@@ -66,52 +62,47 @@ body[data-mode="tv"] .player-section{background:transparent}
 .control-btn{background:rgba(255,255,255,0.1);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);backdrop-filter:blur(10px)}
 .control-btn:hover{background:rgba(62,166,255,0.3);transform:scale(1.1)}
 
-/* القائمة السفلية أسفل المشغل */
-.under-player-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;padding:15px;background:var(--bg-card);backdrop-filter:blur(30px);border:1px solid var(--border-color);border-radius:var(--radius)}
-.under-player-controls .custom-select{flex:1;min-width:200px;max-width:400px;padding:12px 16px;font-size:0.95rem}
-.nav-btn{padding:12px 24px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.95rem;transition:var(--transition)}
+.under-player-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;padding:12px;background:var(--bg-card);backdrop-filter:blur(30px);border:1px solid var(--border-color);border-radius:var(--radius)}
+.under-player-controls .custom-select{flex:1;min-width:200px;max-width:400px;padding:10px 16px;font-size:0.9rem}
+.nav-btn{padding:10px 20px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.9rem;transition:var(--transition)}
 .nav-btn:hover{background:rgba(62,166,255,0.1);border-color:var(--accent-primary);color:var(--accent-primary)}
-.nav-btn.fav-btn{color:var(--text-muted);font-size:1.1rem;padding:12px 20px}
+.nav-btn.fav-btn{color:var(--text-muted);font-size:1rem;padding:10px 18px}
 .nav-btn.fav-btn.active{color:var(--accent-secondary);border-color:var(--accent-secondary);background:rgba(255,107,107,0.1)}
 .nav-btn:disabled{opacity:0.4;cursor:not-allowed}
 
-/* لوحة التحكم الجانبية - مثبتة دائماً */
-.controls-sidebar{background:var(--bg-card);backdrop-filter:blur(30px);border:1px solid var(--border-color);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;gap:16px;position:sticky;top:20px;z-index:20;max-height:calc(100vh - 40px);overflow-y:auto}
-.control-group{display:flex;flex-direction:column;gap:8px}
-.control-label{font-size:0.8rem;color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:8px}
-.custom-select,.form-input{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);padding:12px 16px;border-radius:10px;font-size:0.95rem;font-family:inherit;cursor:pointer;width:100%;outline:none;transition:var(--transition);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a0b0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 16px center;padding-left:38px}
+/* لوحة التحكم الجانبية الثابتة (بدون عنوان) */
+.controls-sidebar{background:var(--bg-card);backdrop-filter:blur(30px);border:1px solid var(--border-color);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:100%}
+.control-group{display:flex;flex-direction:column;gap:6px}
+.control-label{font-size:0.75rem;color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:8px}
+.custom-select,.form-input{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);padding:10px 16px;border-radius:8px;font-size:0.9rem;font-family:inherit;cursor:pointer;width:100%;outline:none;transition:var(--transition);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a0b0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 16px center;padding-left:38px}
 .form-input{cursor:text;appearance:none;background-image:none;padding-left:16px}
 .custom-select:hover,.form-input:hover{border-color:rgba(62,166,255,0.3)}
 .custom-select:focus,.form-input:focus{border-color:var(--accent-primary);box-shadow:0 0 0 4px rgba(62,166,255,0.1)}
 .action-bar{display:flex;gap:10px;margin-top:4px}
-.btn-primary{flex:1;padding:14px;background:linear-gradient(135deg,var(--accent-primary),#2563eb);color:#fff;border:none;border-radius:12px;font-size:0.95rem;font-weight:800;font-family:inherit;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{flex:1;padding:12px;background:linear-gradient(135deg,var(--accent-primary),#2563eb);color:#fff;border:none;border-radius:10px;font-size:0.9rem;font-weight:800;font-family:inherit;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(62,166,255,0.4)}
-.btn-secondary{padding:14px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:12px;font-size:0.9rem;font-weight:700;font-family:inherit;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-secondary{padding:12px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:10px;font-size:0.85rem;font-weight:700;font-family:inherit;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-secondary:hover{background:rgba(255,255,255,0.05);border-color:var(--text-secondary)}
 
-/* تعديل الرابط والأزرار ليكونوا أصغر وأكثر أناقة */
-.url-panel{background:rgba(0,0,0,0.3);border:1px dashed rgba(62,166,255,0.25);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:center}
-.url-text{width:100%;color:var(--accent-primary);word-break:break-all;font-family:'Courier New',monospace;font-size:0.7rem;direction:ltr;text-align:center;opacity:0.9;max-height:40px;overflow-y:auto}
+/* تصغير الرابط والأزرار */
+.url-panel{background:rgba(0,0,0,0.3);border:1px dashed rgba(62,166,255,0.25);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;align-items:center}
+.url-text{width:100%;color:var(--accent-primary);word-break:break-all;font-family:'Courier New',monospace;font-size:0.65rem;direction:ltr;text-align:center;opacity:0.9;max-height:30px;overflow-y:auto}
 .url-btns{display:flex;gap:8px;width:100%}
 .url-btns .copy-btn{flex:1;justify-content:center}
-.copy-btn{background:rgba(62,166,255,0.1);color:var(--accent-primary);border:1px solid rgba(62,166,255,0.2);padding:6px 10px;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:700;font-size:0.75rem;transition:var(--transition);white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:4px}
+.copy-btn{background:rgba(62,166,255,0.1);color:var(--accent-primary);border:1px solid rgba(62,166,255,0.2);padding:5px 10px;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;transition:var(--transition);white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:4px}
 .copy-btn:hover{background:var(--accent-primary);color:#000}
 .copy-btn.copied{background:var(--accent-success);color:#000;border-color:var(--accent-success)}
 
-/* الإعدادات المتقدمة (تنزل لأسفل وتظهر تحت المشغل المثبت) */
-.advanced-panel{grid-column:1/-1;background:var(--bg-card);backdrop-filter:blur(30px);border:1px solid var(--border-color);border-radius:var(--radius);overflow:hidden;padding:24px;margin-top:20px}
-.advanced-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;font-size:1.1rem;font-weight:800;color:var(--text-primary)}
+.advanced-panel{grid-column:1/-1;background:var(--bg-card);backdrop-filter:blur(30px);border:1px solid var(--border-color);border-radius:var(--radius);overflow:hidden;padding:20px}
+.advanced-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;font-size:1rem;font-weight:800;color:var(--text-primary)}
 .advanced-header i{color:var(--accent-primary)}
-.advanced-inner{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
-.form-group{display:flex;flex-direction:column;gap:8px}
-.form-label{font-size:0.8rem;color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:8px}
+.advanced-inner{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:0.75rem;color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:8px}
 .hidden{display:none!important}
-
-/* زر العودة للأعلى */
 .scroll-top{position:fixed;bottom:28px;right:28px;width:50px;height:50px;border-radius:50%;background:var(--bg-card);backdrop-filter:blur(30px);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);z-index:100;opacity:0;transform:translateY(20px);pointer-events:none;box-shadow:0 8px 30px rgba(0,0,0,0.4)}
 .scroll-top.visible{opacity:1;transform:translateY(0);pointer-events:all}
 .scroll-top:hover{background:var(--accent-primary);color:#000;border-color:var(--accent-primary)}
-
 .toast-container{position:fixed;bottom:20px;left:20px;z-index:1000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
 .toast{background:var(--bg-card);backdrop-filter:blur(30px);border:1px solid var(--border-color);border-right:4px solid var(--accent-primary);padding:14px 24px;border-radius:12px;color:var(--text-primary);font-size:0.9rem;display:flex;align-items:center;gap:12px;animation:toastIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 10px 40px rgba(0,0,0,0.5);min-width:250px;pointer-events:all;font-weight:500}
 .toast.error{border-right-color:var(--accent-secondary)}
@@ -142,8 +133,7 @@ body[data-mode="tv"] .player-section{background:transparent}
 .mobile-nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-muted);font-size:0.7rem;background:none;border:none;cursor:pointer;padding:8px 16px;border-radius:12px;transition:var(--transition)}
 .mobile-nav-item i{font-size:1.3rem}
 .mobile-nav-item.active{color:var(--accent-primary)}
-@media(max-width:1024px){.app-container{grid-template-columns:1fr}}
-@media(max-width:768px){.app-container{padding:12px;gap:16px}.app-header{padding:12px 16px;top:12px;flex-wrap:wrap;gap:12px}.logo{font-size:1.1rem}.controls-sidebar{position:relative;top:0;max-height:none;overflow-y:visible}.player-section{position:relative;top:0;background:transparent}.mobile-nav{display:flex}body{padding-bottom:80px}.toast-container{bottom:90px;left:12px;right:12px}.toast{min-width:auto;width:100%}.under-player-controls{flex-direction:column}.under-player-controls .custom-select{width:100%;max-width:100%}}
+@media(max-width:1024px){.dashboard-wrapper{grid-template-columns:1fr;height:auto;position:relative}.player-wrapper{max-height:70vh}.controls-sidebar{max-height:none;overflow-y:visible}.mobile-nav{display:flex}body{padding-bottom:80px}}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:4px}
 ::selection{background:rgba(62,166,255,0.3);color:var(--text-primary)}
 </style>
@@ -152,19 +142,20 @@ body[data-mode="tv"] .player-section{background:transparent}
 <div class="bg-grid"></div><div class="bg-glow"></div>
 <div class="modal-overlay" id="modalOverlay"><div class="modal" id="modal"><div class="modal-title" id="modalTitle">العنوان</div><div class="modal-body" id="modalBody">المحتوى</div><div class="modal-actions" id="modalActions"></div></div></div>
 <button class="scroll-top" id="scrollTop" title="العودة للأعلى"><i class="fas fa-arrow-up"></i></button>
-<div class="app-container">
-  <header class="app-header">
-    <div class="logo"><i class="fas fa-paw"></i><span>ذيب 🐺</span></div>
-    <div class="header-actions">
-      <button class="icon-btn" id="favListBtn" title="المفضلة" data-tooltip="قائمة المفضلة"><i class="fas fa-heart"></i></button>
-      <button class="icon-btn" id="historyBtn" title="سجل المشاهدة" data-tooltip="السجل"><i class="fas fa-history"></i></button>
-      <button class="icon-btn" id="focusBtn" title="وضع التركيز (Z)" data-tooltip="وضع التركيز"><i class="fas fa-compress"></i></button>
-      <button class="icon-btn" id="themeBtn" title="تبديل الوضع (T)" data-tooltip="تبديل الوضع"><i class="fas fa-moon"></i></button>
-      <button class="icon-btn" id="tvModeBtn" title="وضع TV (V)" data-tooltip="وضع TV"><i class="fas fa-tv"></i></button>
-      <div class="status-indicator"><div class="status-dot" id="connectionStatus"></div><span id="statusText">جاهز</span></div>
-    </div>
-  </header>
 
+<header class="app-header">
+  <div class="logo"><i class="fas fa-play-circle"></i><span>ذيب 🐺</span></div>
+  <div class="header-actions">
+    <button class="icon-btn" id="favListBtn" title="المفضلة" data-tooltip="قائمة المفضلة"><i class="fas fa-heart"></i></button>
+    <button class="icon-btn" id="historyBtn" title="سجل المشاهدة" data-tooltip="السجل"><i class="fas fa-history"></i></button>
+    <button class="icon-btn" id="focusBtn" title="وضع التركيز (Z)" data-tooltip="وضع التركيز"><i class="fas fa-compress"></i></button>
+    <button class="icon-btn" id="themeBtn" title="تبديل الوضع (T)" data-tooltip="تبديل الوضع"><i class="fas fa-moon"></i></button>
+    <button class="icon-btn" id="tvModeBtn" title="وضع TV (V)" data-tooltip="وضع TV"><i class="fas fa-tv"></i></button>
+    <div class="status-indicator"><div class="status-dot" id="connectionStatus"></div><span id="statusText">جاهز</span></div>
+  </div>
+</header>
+
+<div class="dashboard-wrapper">
   <section class="player-section">
     <div class="player-wrapper" id="playerWrapper">
       <div class="player-container">
@@ -251,7 +242,7 @@ body[data-mode="tv"] .player-section{background:transparent}
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const CFG={BASE_URL:"https://w.anaplayer.online/albaplayer/",MAX_SERVERS:10,STORAGE_KEY:"theeb_player_v12_data",URL_PATTERNS:{standard:(b,s,t,se,ep,srv)=>b+s+(t==="tv"?"-s"+String(se).padStart(2,"0")+"e"+String(ep).padStart(2,"0"):"")+"/?serv="+srv,alt1:(b,s,t,se,ep,srv)=>b+s+(t==="tv"?"-s"+String(se).padStart(2,"0")+"e"+String(ep).padStart(2,"0"):"")+"/serv/"+srv+"/",alt2:(b,s,t,se,ep,srv)=>b+s+(t==="tv"?"-s"+String(se).padStart(2,"0")+"e"+String(ep).padStart(2,"0"):"")+"/?server="+srv}};
+const CFG={BASE_URL:"https://w.anaplayer.online/albaplayer/",MAX_SERVERS:10,STORAGE_KEY:"theeb_player_v13_data",URL_PATTERNS:{standard:(b,s,t,se,ep,srv)=>b+s+(t==="tv"?"-s"+String(se).padStart(2,"0")+"e"+String(ep).padStart(2,"0"):"")+"/?serv="+srv,alt1:(b,s,t,se,ep,srv)=>b+s+(t==="tv"?"-s"+String(se).padStart(2,"0")+"e"+String(ep).padStart(2,"0"):"")+"/serv/"+srv+"/",alt2:(b,s,t,se,ep,srv)=>b+s+(t==="tv"?"-s"+String(se).padStart(2,"0")+"e"+String(ep).padStart(2,"0"):"")+"/?server="+srv}};
 const DB=[
 {title:"وادي الذئاب (Kurtlar Vadisi Pusu)",slug:"kurtlar-vadisi-pusu",type:"tv",seasons:[{n:1,eps:9},{n:2,eps:32},{n:3,eps:22}]},
 {title:"المنظمة (Teskilat)",slug:"teskilat",type:"tv",seasons:[{n:1,eps:184}]},
