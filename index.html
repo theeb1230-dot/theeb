@@ -149,7 +149,7 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Tajawal
 
 <div class="dashboard-wrapper">
   
-  <!-- المشغل على اليمين باللغة العربية (grid-column: 2) -->
+  <!-- المشغل على اليمين باللغة العربية -->
   <section class="player-section">
     <div class="player-wrapper" id="playerWrapper">
       <div class="player-container">
@@ -179,7 +179,7 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Tajawal
     </div>
   </section>
 
-  <!-- لوحة التحكم على اليسار (grid-column: 1) -->
+  <!-- لوحة التحكم على اليسار -->
   <aside class="controls-sidebar">
     <div class="sidebar-title"><i class="fas fa-sliders-h"></i>لوحة التحكم</div>
     
@@ -255,21 +255,22 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Tajawal
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// الإعدادات العامة: الحد الأقصى للسيرفرات 10، والمواسم 15، والأنماط تعتمد ?serv=1 بشكل افتراضي
+// خوارزمية تم تصحيحها بالكامل لتوليد ?serv=X حصراً
 const CFG = {
   BASE_URL: "https://w.anaplayer.online/albaplayer/",
   MAX_SERVERS: 10,
   MAX_SEASONS: 15,
-  STORAGE_KEY: "theeb_player_v14_data",
-  URL_PATTERNS: {
-    standard: (b, s, t, se, ep, srv) => b + s + (t === "tv" ? "-s" + String(se).padStart(2, "0") + "e" + String(ep).padStart(2, "0") : "") + "/?serv=" + srv,
-    alt1: (b, s, t, se, ep, srv) => b + s + (t === "tv" ? "-s" + String(se).padStart(2, "0") + "e" + String(ep).padStart(2, "0") : "") + "/serv/" + srv + "/",
-    alt2: (b, s, t, se, ep, srv) => b + s + (t === "tv" ? "-s" + String(se).padStart(2, "0") + "e" + String(ep).padStart(2, "0") : "") + "/?serv=" + srv
+  STORAGE_KEY: "theeb_player_v15_data",
+  // تم تثبيت نمط الرابط بشكل صارم للنمط الصحيح
+  BUILD_URL: (base, slug, type, season, episode, server) => {
+    const epPath = type === "tv" ? `-s${String(season).padStart(2, "0")}e${String(episode).padStart(2, "0")}` : "";
+    return `${base}${slug}${epPath}/?serv=${server}`;
   }
 };
 
 const DB = [
   {title:"حفر (Cukur)",slug:"cukur",type:"tv",seasons:[{n:1,eps:33},{n:2,eps:34},{n:3,eps:26},{n:4,eps:39}]},
+  {title:"الذئب الوحيد (Yalniz Kurt)",slug:"yalniz-kurt",type:"tv",seasons:[{n:1,eps:28},{n:2,eps:32}]},
   {title:"وادي الذئاب (Kurtlar Vadisi Pusu)",slug:"kurtlar-vadisi-pusu",type:"tv",seasons:[{n:1,eps:9},{n:2,eps:32},{n:3,eps:22}]},
   {title:"المنظمة (Teskilat)",slug:"teskilat",type:"tv",seasons:[{n:1,eps:184}]},
   {title:"ثلاث قروش (Uc Kurus)",slug:"uc-kurus",type:"tv",seasons:[{n:1,eps:28}]},
@@ -281,7 +282,7 @@ const DB = [
 ];
 
 const State = {
-  data: {type:"tv",slug:"cukur",season:1,episode:1,server:1,urlPattern:"standard",theme:"dark",accentColor:"#3ea6ff",isManual:false,currentShow:null,favorites:[],history:[],watchedEpisodes:{}},
+  data: {type:"tv",slug:"cukur",season:1,episode:1,server:1,theme:"dark",accentColor:"#3ea6ff",isManual:false,currentShow:null,favorites:[],history:[],watchedEpisodes:{}},
   init(){this.load()},
   get(){return JSON.parse(JSON.stringify(this.data))},
   set(u){Object.assign(this.data,u);this._save()},
@@ -291,10 +292,7 @@ const State = {
 
 const URLEngine = {
   build(s){
-    const {BASE_URL:p, URL_PATTERNS:m} = CFG;
-    const {slug, type, season, episode, server, urlPattern} = s;
-    const b = m[urlPattern] || m.standard;
-    return b(p, slug, type, season, episode, server);
+    return CFG.BUILD_URL(CFG.BASE_URL, s.slug, s.type, s.season, s.episode, s.server);
   }
 };
 
