@@ -18,7 +18,7 @@
 }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html, body{height:100vh;overflow-x:hidden;font-family:'Tajawal',sans-serif;background:var(--bg-primary);color:var(--text-primary)}
+html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg-primary);color:var(--text-primary)}
 
 .bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(62,166,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(62,166,255,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
 
@@ -28,22 +28,29 @@ html, body{height:100vh;overflow-x:hidden;font-family:'Tajawal',sans-serif;backg
 .logo i{color:var(--accent-primary);font-size:1.5rem}
 .header-actions{display:flex;gap:8px;align-items:center}
 .icon-btn{width:36px;height:36px;border-radius:8px;background:var(--bg-tertiary);border:1px solid var(--border-color);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);font-size:0.9rem}
-.icon-btn:hover,.icon-btn:focus{background:rgba(62,166,255,0.15);border-color:var(--accent-primary);color:var(--accent-primary);outline:none}
+.icon-btn:hover,.icon-btn:focus,.icon-btn.active{background:rgba(62,166,255,0.15);border-color:var(--accent-primary);color:var(--accent-primary);outline:none}
 .status-indicator{display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--text-secondary);margin-right:8px}
 .status-dot{width:8px;height:8px;border-radius:50%;background:var(--accent-success)}
 
-/* التخطيط الرئيسي متناسق للشاشات */
-.dashboard-wrapper{max-width:1400px;margin:0 auto;padding:0 12px;display:grid;grid-template-columns:300px 1fr;gap:12px;z-index:50;position:relative;height:calc(100vh - 70px)}
+/* التخطيط الرئيسي */
+.dashboard-wrapper{max-width:1400px;margin:0 auto;padding:0 12px;display:grid;grid-template-columns:300px 1fr;gap:12px;z-index:50;position:relative}
+
+/* وضع الجوال العمودي */
+.dashboard-wrapper.mobile-mode{display:flex;flex-direction:column}
+.dashboard-wrapper.mobile-mode .player-section{order:1}
+.dashboard-wrapper.mobile-mode .controls-sidebar{order:2;max-height:none}
 
 /* منطقة المشغل */
 .player-section{display:flex;flex-direction:column;gap:8px;grid-column:2;grid-row:1;height:100%;justify-content:flex-start}
 
-/* شريط السيرفرات السريع فوق المشغل */
+/* شريط السيرفرات السريع */
 .quick-servers-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.quick-servers-bar::-webkit-scrollbar{height:4px}
+.quick-servers-bar::-webkit-scrollbar-thumb{background:var(--accent-primary);border-radius:4px}
 .server-chip{padding:6px 14px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:8px;color:var(--text-secondary);font-size:0.8rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:var(--transition)}
 .server-chip:hover,.server-chip.active{background:var(--accent-primary);color:#000;border-color:var(--accent-primary)}
 
-.player-wrapper{position:relative;width:100%;flex:1;max-height:calc(100vh - 180px);aspect-ratio:16/9;background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border-color);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.player-wrapper{position:relative;width:100%;aspect-ratio:16/9;max-height:calc(100vh - 180px);background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border-color);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
 .player-container{position:absolute;inset:0}
 .player-container iframe{position:absolute;inset:0;width:100%;height:100%;border:none;opacity:0;transition:opacity 0.4s ease}
 .player-container iframe.loaded{opacity:1}
@@ -52,7 +59,7 @@ html, body{height:100vh;overflow-x:hidden;font-family:'Tajawal',sans-serif;backg
 .loader-ring{width:40px;height:40px;border:3px solid rgba(62,166,255,0.1);border-top-color:var(--accent-primary);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* التحكم السفلي بالمسلسل والمكتبة (واضح تماماً ومدمج) */
+/* التحكم السفلي والمكتبة */
 .under-player-controls{display:flex;gap:8px;align-items:center;padding:8px 12px;background:var(--bg-card);backdrop-filter:blur(20px);border:1px solid var(--border-color);border-radius:var(--radius)}
 .under-player-controls .custom-select{flex:1;padding:8px 12px;font-size:0.85rem}
 .nav-btn{padding:8px 14px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.8rem;transition:var(--transition);white-space:nowrap}
@@ -65,16 +72,23 @@ html, body{height:100vh;overflow-x:hidden;font-family:'Tajawal',sans-serif;backg
 .sidebar-title{font-size:0.95rem;font-weight:800;display:flex;align-items:center;gap:6px;color:var(--text-primary)}
 .sidebar-title i{color:var(--accent-primary)}
 .control-group{display:flex;flex-direction:column;gap:4px}
-.control-label{font-size:0.7rem;color:var(--text-secondary);font-weight:600}
+.control-label{font-size:0.75rem;color:var(--text-secondary);font-weight:600}
 .custom-select,.form-input{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);padding:8px 12px;border-radius:8px;font-size:0.8rem;font-family:inherit;cursor:pointer;width:100%;outline:none;transition:var(--transition);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a0b0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 10px center}
 .form-input{background-image:none}
 .custom-select:hover,.form-input:hover,.custom-select:focus,.form-input:focus{border-color:var(--accent-primary)}
 .btn-primary{padding:10px;background:linear-gradient(135deg,var(--accent-primary),#2563eb);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:800;font-family:inherit;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(62,166,255,0.3)}
 
-/* لوحة الرابط */
+/* لوحة الرابط وأزرار النسخ والإرسال */
 .url-panel{background:rgba(0,0,0,0.3);border:1px dashed rgba(62,166,255,0.25);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;margin-top:auto}
-.url-text{width:100%;color:var(--accent-primary);word-break:break-all;font-family:monospace;font-size:0.6rem;direction:ltr;text-align:center;max-height:30px;overflow-y:auto}
+.url-text{width:100%;color:var(--accent-primary);word-break:break-all;font-family:monospace;font-size:0.6rem;direction:ltr;text-align:center;max-height:35px;overflow-y:auto}
+.url-actions{display:flex;gap:6px}
+.btn-sec{flex:1;padding:6px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:0.75rem;font-family:inherit;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:var(--transition)}
+.btn-sec:hover{background:rgba(62,166,255,0.15);border-color:var(--accent-primary);color:var(--accent-primary)}
+
+/* الإعدادات المتقدمة */
+.advanced-box{background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.advanced-title{font-size:0.75rem;font-weight:800;color:var(--text-secondary);display:flex;align-items:center;gap:4px}
 
 .hidden{display:none!important}
 @media(max-width:900px){
@@ -92,16 +106,18 @@ html, body{height:100vh;overflow-x:hidden;font-family:'Tajawal',sans-serif;backg
   <div class="header-actions">
     <div class="status-indicator"><div class="status-dot"></div><span>متصل</span></div>
     <button class="icon-btn" id="favListBtn" title="المفضلة"><i class="fas fa-heart"></i></button>
+    <!-- زر وضع الجوال العمودي الجديد -->
+    <button class="icon-btn" id="mobileModeBtn" title="وضع الجوال العمودي"><i class="fas fa-mobile-alt"></i></button>
     <button class="icon-btn" id="historyBtn" title="سجل المشاهدة"><i class="fas fa-history"></i></button>
     <button class="icon-btn" id="fullscreenBtn" title="تكبير الشاشة"><i class="fas fa-expand"></i></button>
   </div>
 </header>
 
-<div class="dashboard-wrapper">
+<div class="dashboard-wrapper" id="mainLayout">
   
   <!-- منطقة المشغل الرئيسية -->
   <section class="player-section">
-    <!-- شريط السيرفرات السريع فوق المشغل -->
+    <!-- شريط السيرفرات السريع (حتى 10 سيرفرات) -->
     <div class="quick-servers-bar" id="quickServersBar"></div>
 
     <div class="player-wrapper" id="playerWrapper">
@@ -114,7 +130,7 @@ html, body{height:100vh;overflow-x:hidden;font-family:'Tajawal',sans-serif;backg
       </div>
     </div>
 
-    <!-- شريط المكتبة والأزرار تحت المشغل مباشرة وبوضوح -->
+    <!-- شريط المكتبة والأزرار تحت المشغل مباشرة -->
     <div class="under-player-controls">
       <select id="catalogSelect" class="custom-select"></select>
       <button class="nav-btn" id="prevEpBtn"><i class="fas fa-step-forward"></i> السابق</button>
@@ -142,10 +158,24 @@ html, body{height:100vh;overflow-x:hidden;font-family:'Tajawal',sans-serif;backg
       <select id="serverSelect" class="custom-select"></select>
     </div>
     
-    <button class="btn-primary" id="applyBtn" style="margin-top:4px"><i class="fas fa-sync-alt"></i> تحديث</button>
+    <button class="btn-primary" id="applyBtn" style="margin-top:2px"><i class="fas fa-sync-alt"></i> تحديث</button>
     
+    <!-- قسم الإعدادات المتقدمة (مسترجع) -->
+    <div class="advanced-box">
+      <div class="advanced-title"><i class="fas fa-cogs"></i> إعدادات متقدمة</div>
+      <div class="control-group">
+        <label class="control-label">البادئة Custom Slug</label>
+        <input type="text" id="customSlugInput" class="form-input" placeholder="اختياري (مثال: cukur)">
+      </div>
+    </div>
+
+    <!-- لوحة الرابط وأزرار نسخ/إرسال (مسترجعة) -->
     <div class="url-panel">
       <div class="url-text" id="urlDisplay">...</div>
+      <div class="url-actions">
+        <button class="btn-sec" id="copyUrlBtn"><i class="fas fa-copy"></i> نسخ</button>
+        <button class="btn-sec" id="openUrlBtn"><i class="fas fa-external-link-alt"></i> إرسال</button>
+      </div>
     </div>
   </aside>
 
@@ -154,7 +184,7 @@ html, body{height:100vh;overflow-x:hidden;font-family:'Tajawal',sans-serif;backg
 <script>
 const CFG = {
   BASE_URL: "https://w.anaplayer.online/albaplayer/",
-  MAX_SERVERS: 6,
+  MAX_SERVERS: 10, // تم زيادة الحد الأقصى إلى 10
   BUILD_URL: (base, slug, type, season, episode, server) => {
     const epPath = type === "tv" ? `-s${String(season).padStart(2, "0")}e${String(episode).padStart(2, "0")}` : "";
     return `${base}${slug}${epPath}/?serv=${server}`;
@@ -187,19 +217,42 @@ const UI = {
     this.loadShow(DB[0]);
   },
   cache(){
-    ["videoPlayer","playerOverlay","catalogSelect","seasonSelect","episodeSelect","serverSelect","urlDisplay","quickServersBar","applyBtn","prevEpBtn","nextEpBtn","fullscreenBtn"].forEach(id => this.els[id] = document.getElementById(id));
+    ["videoPlayer","playerOverlay","catalogSelect","seasonSelect","episodeSelect","serverSelect","urlDisplay","quickServersBar","applyBtn","prevEpBtn","nextEpBtn","fullscreenBtn","copyUrlBtn","openUrlBtn","mobileModeBtn","mainLayout","customSlugInput"].forEach(id => this.els[id] = document.getElementById(id));
   },
   bind(){
     this.els.catalogSelect.addEventListener("change", e => {
       const show = DB[e.target.value];
-      if(show){ State.set({currentShow:show, slug:show.slug, type:show.type}); this.loadShow(show); Engine.load(); }
+      if(show){ 
+        State.set({currentShow:show, slug:show.slug, type:show.type}); 
+        this.els.customSlugInput.value = "";
+        this.loadShow(show); 
+        Engine.load(); 
+      }
     });
     this.els.seasonSelect.addEventListener("change", e => { State.set({season: parseInt(e.target.value)}); this.renderEpisodes(); Engine.load(); });
     this.els.episodeSelect.addEventListener("change", e => { State.set({episode: parseInt(e.target.value)}); Engine.load(); });
     this.els.serverSelect.addEventListener("change", e => { this.setServer(parseInt(e.target.value)); });
+    this.els.customSlugInput.addEventListener("input", e => { if(e.target.value.trim()) State.set({slug: e.target.value.trim()}); });
+    
     this.els.applyBtn.addEventListener("click", () => Engine.load());
     this.els.nextEpBtn.addEventListener("click", () => this.navEp(1));
     this.els.prevEpBtn.addEventListener("click", () => this.navEp(-1));
+    
+    // زر وضع الجوال
+    this.els.mobileModeBtn.addEventListener("click", () => {
+      this.els.mainLayout.classList.toggle("mobile-mode");
+      this.els.mobileModeBtn.classList.toggle("active");
+    });
+
+    // أزرار النسخ والإرسال
+    this.els.copyUrlBtn.addEventListener("click", () => {
+      const txt = this.els.urlDisplay.textContent;
+      navigator.clipboard.writeText(txt).then(() => alert("تم نسخ الرابط!"));
+    });
+    this.els.openUrlBtn.addEventListener("click", () => {
+      window.open(this.els.urlDisplay.textContent, "_blank");
+    });
+
     this.els.fullscreenBtn.addEventListener("click", () => {
       const el = document.getElementById('playerWrapper');
       if(!document.fullscreenElement) el.requestFullscreen(); else document.exitFullscreen();
