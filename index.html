@@ -36,7 +36,6 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
 /* التخطيط الرئيسي */
 .dashboard-wrapper{max-width:1400px;margin:0 auto;padding:0 12px;display:grid;grid-template-columns:300px 1fr;gap:12px;z-index:50;position:relative}
 
-/* وضع الجوال العمودي */
 .dashboard-wrapper.mobile-mode{display:flex;flex-direction:column}
 .dashboard-wrapper.mobile-mode .player-section{order:1}
 .dashboard-wrapper.mobile-mode .sidebar-container{order:2;max-height:none}
@@ -92,7 +91,7 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
 .btn-sec{flex:1;padding:6px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:0.75rem;font-family:inherit;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:var(--transition)}
 .btn-sec:hover{background:rgba(62,166,255,0.15);border-color:var(--accent-primary);color:var(--accent-primary)}
 
-/* الإعدادات المتقدمة الأزرار الثلاثة */
+/* الإعدادات المتقدمة */
 .adv-actions{display:flex;gap:4px;margin-top:4px}
 .btn-adv{flex:1;padding:6px 4px;font-size:0.7rem;font-weight:700;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-tertiary);color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;transition:var(--transition)}
 .btn-adv.fetch{background:rgba(81,207,102,0.15);border-color:var(--accent-success);color:var(--accent-success)}
@@ -103,6 +102,34 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
 .btn-adv.reset:hover{background:var(--accent-warning);color:#000}
 
 .episodes-inputs-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;max-height:120px;overflow-y:auto;padding-right:2px}
+
+/* أزرار الإجراءات في القائمة المنبثقة */
+.modal-actions-btns{display:flex;gap:4px;align-items:center}
+.modal-item-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:6px;transition:var(--transition);font-size:0.9rem}
+.modal-item-btn.edit:hover{color:var(--accent-primary)}
+.modal-item-btn.del:hover{color:var(--accent-secondary)}
+
+/* القوائم المنبثقة (Modals) */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(5px);z-index:200;display:flex;align-items:center;justify-content:center;padding:15px;opacity:0;pointer-events:none;transition:var(--transition)}
+.modal-backdrop.active{opacity:1;pointer-events:auto}
+.modal-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius);width:100%;max-width:500px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 40px rgba(0,0,0,0.8);overflow:hidden}
+.modal-header{padding:12px 16px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:1rem;font-weight:800;display:flex;align-items:center;gap:8px}
+.modal-close{background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;transition:var(--transition)}
+.modal-close:hover{color:var(--accent-secondary)}
+.modal-body{padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;flex:1}
+
+.modal-search-box{display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid var(--border-color);background:var(--bg-tertiary)}
+.modal-search-input{flex:1;background:var(--bg-primary);border:1px solid var(--border-color);color:var(--text-primary);padding:6px 12px;border-radius:6px;font-size:0.8rem;font-family:inherit;outline:none}
+.modal-search-input:focus{border-color:var(--accent-primary)}
+
+.modal-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:8px;transition:var(--transition)}
+.modal-item:hover{border-color:var(--accent-primary);background:rgba(62,166,255,0.05)}
+.modal-item-info{display:flex;flex-direction:column;gap:2px;cursor:pointer;flex:1}
+.modal-item-title{font-size:0.85rem;font-weight:700;color:var(--text-primary)}
+.modal-item-sub{font-size:0.72rem;color:var(--text-secondary)}
+.badge-custom{font-size:0.65rem;background:rgba(81,207,102,0.15);color:var(--accent-success);padding:2px 6px;border-radius:4px;border:1px solid rgba(81,207,102,0.3);width:fit-content;margin-top:2px}
+.empty-msg{text-align:center;padding:20px;color:var(--text-muted);font-size:0.85rem}
 
 .hidden{display:none!important}
 @media(max-width:900px){
@@ -115,6 +142,7 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
 <body>
 <div class="bg-grid"></div>
 
+<!-- الشريط العلوي -->
 <header class="app-header">
   <div class="logo"><i class="fas fa-paw"></i><span>ذيب 🐺</span></div>
   <div class="header-actions">
@@ -128,7 +156,7 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
 
 <div class="dashboard-wrapper" id="mainLayout">
   
-  <!-- الحاوية الجانبية: لوحة التحكم والإعدادات المتقدمة -->
+  <!-- الحاوية الجانبية -->
   <div class="sidebar-container">
     
     <!-- لوحة التحكم الأساسية -->
@@ -162,11 +190,10 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
       </div>
     </aside>
 
-    <!-- قائمة منفصلة للإعدادات المتقدمة -->
+    <!-- الإعدادات المتقدمة والسحب -->
     <aside class="card-panel">
-      <div class="sidebar-title"><i class="fas fa-cogs"></i> الإعدادات المتقدمة</div>
+      <div class="sidebar-title"><i class="fas fa-cogs"></i> الإعدادات المتقدمة والسحب</div>
       
-      <!-- 1. النوع -->
       <div class="control-group">
         <label class="control-label">1- النوع</label>
         <select id="advTypeSelect" class="custom-select">
@@ -175,31 +202,31 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
         </select>
       </div>
 
-      <!-- 2. الاسم (slug) -->
       <div class="control-group">
         <label class="control-label">2- الاسم (Slug)</label>
         <input type="text" id="advNameInput" class="form-input" placeholder="مثال: cukur">
       </div>
 
-      <!-- 3. عدد المواسم (حد أقصى 9) -->
       <div class="control-group" id="advSeasonCountGroup">
         <label class="control-label">3- عدد المواسم (حد أقصى 9)</label>
-        <select id="advSeasonCountSelect" class="custom-select">
-          <!-- ديناميكي من 1 إلى 9 بالأرقام الإنجليزية -->
-        </select>
+        <select id="advSeasonCountSelect" class="custom-select"></select>
       </div>
 
-      <!-- 4. عدد الحلقات لكل موسم -->
       <div class="control-group" id="advEpisodesGroup">
         <label class="control-label">4- عدد الحلقات لكل موسم</label>
         <div class="episodes-inputs-grid" id="advEpisodesContainer"></div>
       </div>
 
-      <!-- أزرار الإجراءات السريعة -->
       <div class="adv-actions">
-        <button class="btn-adv fetch" id="advFetchBtn" title="سحب للمكتبة وتشغيل"><i class="fas fa-download"></i> سحب</button>
-        <button class="btn-adv clear" id="advClearBtn" title="مسح السجلات"><i class="fas fa-trash-alt"></i> مسح</button>
+        <button class="btn-adv fetch" id="advFetchBtn" title="سحب للمكتبة وتشغيل تلقائي"><i class="fas fa-download"></i> سحب</button>
+        <button class="btn-adv clear" id="advClearBtn" title="مسح السجلات المحلية"><i class="fas fa-trash-alt"></i> مسح السجل</button>
         <button class="btn-adv reset" id="advResetBtn" title="إعادة ضبط افتراضي"><i class="fas fa-undo"></i> إعادة ضبط</button>
+      </div>
+
+      <!-- تحرير المكتبة المضافة -->
+      <div class="control-group" style="margin-top: 6px;">
+        <label class="control-label">⚙️ تحرير المكتبة المضافة</label>
+        <button class="btn-sec" id="manageCustomDbBtn" style="margin-top:3px;"><i class="fas fa-edit"></i> تحرير العناصر المضافة</button>
       </div>
     </aside>
 
@@ -207,7 +234,6 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
 
   <!-- منطقة المشغل الرئيسية -->
   <section class="player-section">
-    <!-- شريط السيرفرات السريع -->
     <div class="quick-servers-bar" id="quickServersBar"></div>
 
     <div class="player-wrapper" id="playerWrapper">
@@ -220,15 +246,31 @@ html, body{min-height:100vh;font-family:'Tajawal',sans-serif;background:var(--bg
       </div>
     </div>
 
-    <!-- شريط المكتبة والأزرار تحت المشغل مباشرة -->
+    <!-- شريط المكتبة والتنقل -->
     <div class="under-player-controls">
       <select id="catalogSelect" class="custom-select"></select>
       <button class="nav-btn" id="prevEpBtn"><i class="fas fa-step-forward"></i> السابق</button>
-      <button class="nav-btn fav-btn" id="favToggleBtn"><i class="far fa-heart"></i></button>
+      <button class="nav-btn fav-btn" id="favToggleBtn" title="إضافة للمفضلة"><i class="far fa-heart"></i> المفضلة</button>
       <button class="nav-btn" id="nextEpBtn">التالي <i class="fas fa-step-backward"></i></button>
     </div>
+
   </section>
 
+</div>
+
+<!-- النافذة المنبثقة (Modal) -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle"><i class="fas fa-list"></i> قائمة العناصر</div>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-search-box hidden" id="modalSearchBox">
+      <input type="text" id="dbSearchInput" class="modal-search-input" placeholder="🔍 ابحث عن اسم المسلسل أو الـ Slug...">
+      <button class="btn-adv clear" id="clearAllCustomBtn" style="padding:0 10px; font-size:0.75rem;"><i class="fas fa-trash-alt"></i> مسح الكل</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
 </div>
 
 <script>
@@ -241,24 +283,48 @@ const CFG = {
   }
 };
 
-let DB = [
-  // --- المسلسلات (TV) ---
-  {title:"📺 مسلسل وادي الذئاب (Kurtlar Vadisi Pusu)", slug:"kurtlar-vadisi-pusu", type:"tv", seasons:[{n:1,eps:9},{n:2,eps:32},{n:3,eps:22}]},
-  {title:"📺 مسلسل المنظمة (Teskilat)", slug:"teskilat", type:"tv", seasons:[{n:1,eps:184}]},
-  {title:"📺 مسلسل ثلاث قروش (Uc Kurus)", slug:"uc-kurus", type:"tv", seasons:[{n:1,eps:28}]},
-  {title:"📺 مسلسل رامو (Ramo)", slug:"ramo", type:"tv", seasons:[{n:1,eps:40}]},
-  {title:"📺 مسلسل قطاع طرق لن يحكموا العالم (Eskiya Dunyaya)", slug:"eskiya-dunyaya-hukumdar-olmaz", type:"tv", seasons:[{n:1,eps:40},{n:2,eps:31},{n:3,eps:36},{n:4,eps:32},{n:5,eps:26},{n:6,eps:34}]},
-  {title:"📺 مسلسل قيامة أرطغرل (Dirilis Ertugrul)", slug:"dirilis-ertugrul", type:"tv", seasons:[{n:1,eps:150}]},
-  {title:"📺 مسلسل المؤسس عثمان (Kurulus Osman)", slug:"kurulus-osman", type:"tv", seasons:[{n:1,eps:194}]},
-  {title:"📺 مسلسل الحفرة (Cukur)", slug:"cukur", type:"tv", seasons:[{n:1,eps:33},{n:2,eps:34},{n:3,eps:26},{n:4,eps:39}]},
-  {title:"📺 مسلسل الذئب الوحيد (Yalniz Kurt)", slug:"yalniz-kurt", type:"tv", seasons:[{n:1,eps:32}]},
+// المكتبة المدمجة الأساسية المقفلة
+const DEFAULT_DB = [
+  {title:"📺 مسلسل وادي الذئاب (Kurtlar Vadisi Pusu)", slug:"kurtlar-vadisi-pusu", type:"tv", isBuiltIn: true, seasons:[{n:1,eps:9},{n:2,eps:32},{n:3,eps:22}]},
+  {title:"📺 مسلسل المنظمة (Teskilat)", slug:"teskilat", type:"tv", isBuiltIn: true, seasons:[{n:1,eps:184}]},
+  {title:"📺 مسلسل ثلاث قروش (Uc Kurus)", slug:"uc-kurus", type:"tv", isBuiltIn: true, seasons:[{n:1,eps:28}]},
+  {title:"📺 مسلسل رامو (Ramo)", slug:"ramo", type:"tv", isBuiltIn: true, seasons:[{n:1,eps:40}]},
+  {title:"📺 مسلسل قطاع طرق لن يحكموا العالم (Eskiya Dunyaya)", slug:"eskiya-dunyaya-hukumdar-olmaz", type:"tv", isBuiltIn: true, seasons:[{n:1,eps:40},{n:2,eps:31},{n:3,eps:36},{n:4,eps:32},{n:5,eps:26},{n:6,eps:34}]},
+  {title:"📺 مسلسل قيامة أرطغرل (Dirilis Ertugrul)", slug:"dirilis-ertugrul", type:"tv", isBuiltIn: true, seasons:[{n:1,eps:150}]},
+  {title:"📺 مسلسل المؤسس عثمان (Kurulus Osman)", slug:"kurulus-osman", type:"tv", isBuiltIn: true, seasons:[{n:1,eps:194}]},
+  {title:"📺 مسلسل الحفرة (Cukur)", slug:"cukur", type:"tv", isBuiltIn: true, seasons:[{n:1,eps:33},{n:2,eps:34},{n:3,eps:26},{n:4,eps:39}]},
+  {title:"📺 مسلسل الذئب الوحيد (Yalniz Kurt)", slug:"yalniz-kurt", type:"tv", isBuiltIn: true, seasons:[{n:1,eps:32}]},
 
-  // --- الأفلام (Movies) ---
-  {title:"🎬 فيلم وادي الذئاب غلاديو (2009)", slug:"kurtlar-vadisi-gladstatus", type:"movie"},
-  {title:"🎬 فيلم وادي الذئاب الوطن (2017)", slug:"kurtlar-vadisi-vatan", type:"movie"},
-  {title:"🎬 فيلم وادي الذئاب فلسطين (2011)", slug:"kurtlar-vadisi-filistin", type:"movie"},
-  {title:"🎬 فيلم وادي الذئاب العراق (2006)", slug:"kurtlar-vadisi-irak", type:"movie"}
+  {title:"🎬 فيلم وادي الذئاب غلاديو (2009)", slug:"kurtlar-vadisi-gladstatus", type:"movie", isBuiltIn: true},
+  {title:"🎬 فيلم وادي الذئاب الوطن (2017)", slug:"kurtlar-vadisi-vatan", type:"movie", isBuiltIn: true},
+  {title:"🎬 فيلم وادي الذئاب فلسطين (2011)", slug:"kurtlar-vadisi-filistin", type:"movie", isBuiltIn: true},
+  {title:"🎬 فيلم وادي الذئاب العراق (2006)", slug:"kurtlar-vadisi-irak", type:"movie", isBuiltIn: true}
 ];
+
+const Storage = {
+  getCustomCatalog(){
+    const saved = localStorage.getItem("THEEB_CUSTOM_CATALOG");
+    return saved ? JSON.parse(saved) : [];
+  },
+  saveCustomCatalog(data){
+    localStorage.setItem("THEEB_CUSTOM_CATALOG", JSON.stringify(data));
+  },
+  getFavs(){
+    return JSON.parse(localStorage.getItem("THEEB_FAVS") || "[]");
+  },
+  saveFavs(favs){
+    localStorage.setItem("THEEB_FAVS", JSON.stringify(favs));
+  },
+  getHistory(){
+    return JSON.parse(localStorage.getItem("THEEB_HISTORY") || "[]");
+  },
+  saveHistory(hist){
+    localStorage.setItem("THEEB_HISTORY", JSON.stringify(hist));
+  }
+};
+
+let customDB = Storage.getCustomCatalog();
+let DB = [...customDB, ...DEFAULT_DB];
 
 const State = {
   data: {type:"tv", slug:"kurtlar-vadisi-pusu", season:1, episode:1, server:1, currentShow:DB[0]},
@@ -276,9 +342,10 @@ const UI = {
     this.bind();
     this.loadShow(DB[0]);
     this.fillAdvDefaults();
+    this.updateFavButtonState();
   },
   cache(){
-    ["videoPlayer","playerOverlay","catalogSelect","seasonSelect","episodeSelect","serverSelect","urlDisplay","quickServersBar","applyBtn","prevEpBtn","nextEpBtn","fullscreenBtn","copyUrlBtn","openUrlBtn","mobileModeBtn","mainLayout","seasonGroup","episodeGroup","advTypeSelect","advNameInput","advSeasonCountSelect","advSeasonCountGroup","advEpisodesGroup","advEpisodesContainer","advFetchBtn","advClearBtn","advResetBtn"].forEach(id => this.els[id] = document.getElementById(id));
+    ["videoPlayer","playerOverlay","catalogSelect","seasonSelect","episodeSelect","serverSelect","urlDisplay","quickServersBar","applyBtn","prevEpBtn","nextEpBtn","favToggleBtn","fullscreenBtn","copyUrlBtn","openUrlBtn","mobileModeBtn","mainLayout","seasonGroup","episodeGroup","advTypeSelect","advNameInput","advSeasonCountSelect","advSeasonCountGroup","advEpisodesGroup","advEpisodesContainer","advFetchBtn","advClearBtn","advResetBtn","favListBtn","historyBtn","manageCustomDbBtn","modalBackdrop","modalTitle","modalBody","modalCloseBtn","modalSearchBox","dbSearchInput","clearAllCustomBtn"].forEach(id => this.els[id] = document.getElementById(id));
   },
   initAdvSeasonSelect(){
     let opts = '';
@@ -322,8 +389,39 @@ const UI = {
     this.els.applyBtn.addEventListener("click", () => Engine.load());
     this.els.nextEpBtn.addEventListener("click", () => this.navEp(1));
     this.els.prevEpBtn.addEventListener("click", () => this.navEp(-1));
-    
-    // أحداث الإعدادات المتقدمة المنفصلة
+
+    this.els.favToggleBtn.addEventListener("click", () => this.toggleFavorite());
+    this.els.favListBtn.addEventListener("click", () => this.openFavModal());
+    this.els.historyBtn.addEventListener("click", () => this.openHistoryModal());
+    this.els.manageCustomDbBtn.addEventListener("click", () => this.openManageDbModal());
+
+    this.els.modalCloseBtn.addEventListener("click", () => {
+      this.els.modalBackdrop.classList.remove("active");
+    });
+    this.els.modalBackdrop.addEventListener("click", (e) => {
+      if(e.target === this.els.modalBackdrop) this.els.modalBackdrop.classList.remove("active");
+    });
+
+    // البحث داخل تحرير المكتبة
+    this.els.dbSearchInput.addEventListener("input", (e) => {
+      this.renderCustomDbItems(e.target.value.trim().toLowerCase());
+    });
+
+    // مسح كافة العناصر المضافة
+    this.els.clearAllCustomBtn.addEventListener("click", () => {
+      if(confirm("هل أنت تأكد من إزالة جميع العناصر المضافة؟")){
+        customDB = [];
+        Storage.saveCustomCatalog(customDB);
+        DB = [...customDB, ...DEFAULT_DB];
+        this.renderCatalog();
+        this.els.modalBackdrop.classList.remove("active");
+        this.clearAdvInputs();
+        this.loadShow(DB[0]);
+        Engine.load();
+      }
+    });
+
+    // الإعدادات المتقدمة
     this.els.advTypeSelect.addEventListener("change", e => {
       const isMovie = e.target.value === "movie";
       this.els.advSeasonCountGroup.classList.toggle("hidden", isMovie);
@@ -334,11 +432,10 @@ const UI = {
       this.renderAdvEpisodeInputs(parseInt(e.target.value));
     });
 
-    // زر سحب: نقل المعلومات للمكتبة مع التشغيل
     this.els.advFetchBtn.addEventListener("click", () => {
       const type = this.els.advTypeSelect.value;
       const slug = this.els.advNameInput.value.trim() || "custom-show";
-      const title = (type === "movie" ? "🎬 فيلم " : "📺 مسلسل ") + slug;
+      const title = (type === "movie" ? "🎬 " : "📺 ") + slug;
 
       let seasons = [];
       if(type === "tv"){
@@ -351,35 +448,51 @@ const UI = {
         });
       }
 
-      const newItem = { title, slug, type, seasons };
-      DB.unshift(newItem); // إضافة للبداية
+      const newItem = { title, slug, type, seasons, isBuiltIn: false };
+      
+      // التخزين بالاعتماد على دالة المفتاح الفريد (Slug) لمنع التكرار
+      const existingIndex = customDB.findIndex(item => item.slug === slug);
+      if(existingIndex > -1){
+        customDB[existingIndex] = newItem;
+      } else {
+        customDB.unshift(newItem);
+      }
+
+      Storage.saveCustomCatalog(customDB);
+      DB = [...customDB, ...DEFAULT_DB];
+
       this.renderCatalog();
-      this.els.catalogSelect.value = 0;
-      State.set({currentShow: newItem, slug: newItem.slug, type: newItem.type});
+      const targetIdx = DB.findIndex(item => item.slug === slug);
+      this.els.catalogSelect.value = targetIdx > -1 ? targetIdx : 0;
+      State.set({currentShow: newItem, slug: newItem.slug, type: newItem.type, season:1, episode:1});
       this.loadShow(newItem);
       Engine.load();
-      alert("تم سحب البيانات وإضافتها للمكتبة وتشغيلها بنجاح!");
+      alert(existingIndex > -1 ? "تم تحديث بيانات العمل في المكتبة وتحديث المشغل!" : "تم سحب البيانات وإضافتها للمكتبة المضافة وتحديث المشغل تلقائياً!");
     });
 
-    // زر مسح السجلات
     this.els.advClearBtn.addEventListener("click", () => {
-      localStorage.clear();
-      alert("تم مسح جميع سجلات المشاهدة والمفضلة بنجاح!");
+      localStorage.removeItem("THEEB_FAVS");
+      localStorage.removeItem("THEEB_HISTORY");
+      this.updateFavButtonState();
+      alert("تم مسح السجل والمفضلة المحفوظة بالمتصفح!");
     });
 
-    // زر إعادة ضبط الإعدادات المتقدمة لبيانات افتراضية
     this.els.advResetBtn.addEventListener("click", () => {
+      localStorage.removeItem("THEEB_CUSTOM_CATALOG");
+      customDB = [];
+      DB = [...DEFAULT_DB];
+      this.renderCatalog();
       this.fillAdvDefaults();
-      alert("تمت إعادة ضبط الإعدادات المتقدمة إلى البيانات الافتراضية!");
+      this.loadShow(DB[0]);
+      Engine.load();
+      alert("تم مسح جميع العناصر المضافة وإعادة الضبط للافتراضي!");
     });
 
-    // وضع الجوال
     this.els.mobileModeBtn.addEventListener("click", () => {
       this.els.mainLayout.classList.toggle("mobile-mode");
       this.els.mobileModeBtn.classList.toggle("active");
     });
 
-    // النسخ والإرسال
     this.els.copyUrlBtn.addEventListener("click", () => {
       navigator.clipboard.writeText(this.els.urlDisplay.textContent).then(() => alert("تم نسخ الرابط!"));
     });
@@ -392,6 +505,224 @@ const UI = {
       if(!document.fullscreenElement) el.requestFullscreen(); else document.exitFullscreen();
     });
   },
+
+  clearAdvInputs(){
+    this.els.advTypeSelect.value = "tv";
+    this.els.advTypeSelect.dispatchEvent(new Event('change'));
+    this.els.advNameInput.value = "";
+    this.els.advSeasonCountSelect.value = "1";
+    this.renderAdvEpisodeInputs(1);
+  },
+  
+  toggleFavorite(){
+    const st = State.get();
+    let favs = Storage.getFavs();
+    const idx = favs.findIndex(f => f.slug === st.slug);
+    
+    if(idx > -1){
+      favs.splice(idx, 1);
+      alert("تم الإزالة من المفضلة");
+    } else {
+      favs.unshift({
+        title: st.currentShow.title,
+        slug: st.slug,
+        type: st.type
+      });
+      alert("تمت الإضافة إلى المفضلة");
+    }
+    Storage.saveFavs(favs);
+    this.updateFavButtonState();
+  },
+
+  updateFavButtonState(){
+    const st = State.get();
+    const favs = Storage.getFavs();
+    const isFav = favs.some(f => f.slug === st.slug);
+    
+    if(isFav){
+      this.els.favToggleBtn.classList.add("active");
+      this.els.favToggleBtn.innerHTML = `<i class="fas fa-heart"></i> المفضلة`;
+    } else {
+      this.els.favToggleBtn.classList.remove("active");
+      this.els.favToggleBtn.innerHTML = `<i class="far fa-heart"></i> المفضلة`;
+    }
+  },
+
+  openFavModal(){
+    this.els.modalSearchBox.classList.add("hidden");
+    const favs = Storage.getFavs();
+    this.els.modalTitle.innerHTML = `<i class="fas fa-heart" style="color:var(--accent-secondary)"></i> قائمة المفضلة`;
+    if(favs.length === 0){
+      this.els.modalBody.innerHTML = `<div class="empty-msg">لا توجد عناصر بالمفضلة حتى الآن</div>`;
+    } else {
+      this.els.modalBody.innerHTML = favs.map((f, i) => `
+        <div class="modal-item">
+          <div class="modal-item-info" onclick="UI.playFromModal('${f.slug}')">
+            <div class="modal-item-title">${f.title}</div>
+            <div class="modal-item-sub">${f.type === 'tv' ? 'مسلسل' : 'فيلم'}</div>
+          </div>
+          <button class="modal-item-btn del" onclick="UI.removeFav(${i})" title="حذف"><i class="fas fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
+    this.els.modalBackdrop.classList.add("active");
+  },
+
+  removeFav(idx){
+    let favs = Storage.getFavs();
+    favs.splice(idx, 1);
+    Storage.saveFavs(favs);
+    this.openFavModal();
+    this.updateFavButtonState();
+  },
+
+  openHistoryModal(){
+    this.els.modalSearchBox.classList.add("hidden");
+    const hist = Storage.getHistory();
+    this.els.modalTitle.innerHTML = `<i class="fas fa-history" style="color:var(--accent-primary)"></i> سجل المشاهدة`;
+    if(hist.length === 0){
+      this.els.modalBody.innerHTML = `<div class="empty-msg">سجل المشاهدة فارغ</div>`;
+    } else {
+      this.els.modalBody.innerHTML = hist.map((h, i) => `
+        <div class="modal-item">
+          <div class="modal-item-info" onclick="UI.playFromHistory(${i})">
+            <div class="modal-item-title">${h.title}</div>
+            <div class="modal-item-sub">${h.type === 'tv' ? `الموسم ${h.season} - الحلقة ${h.episode}` : 'فيلم'} | سيرفر ${h.server}</div>
+          </div>
+          <button class="modal-item-btn del" onclick="UI.removeHistory(${i})" title="حذف"><i class="fas fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
+    this.els.modalBackdrop.classList.add("active");
+  },
+
+  removeHistory(idx){
+    let hist = Storage.getHistory();
+    hist.splice(idx, 1);
+    Storage.saveHistory(hist);
+    this.openHistoryModal();
+  },
+
+  playFromModal(slug){
+    const idx = DB.findIndex(d => d.slug === slug);
+    if(idx > -1){
+      this.els.catalogSelect.value = idx;
+      const show = DB[idx];
+      State.set({currentShow:show, slug:show.slug, type:show.type});
+      this.loadShow(show);
+      Engine.load();
+      this.els.modalBackdrop.classList.remove("active");
+    }
+  },
+
+  playFromHistory(histIndex){
+    const hist = Storage.getHistory()[histIndex];
+    if(!hist) return;
+    const idx = DB.findIndex(d => d.slug === hist.slug);
+    if(idx > -1){
+      this.els.catalogSelect.value = idx;
+      const show = DB[idx];
+      State.set({currentShow:show, slug:show.slug, type:show.type, season: hist.season || 1, episode: hist.episode || 1, server: hist.server || 1});
+      this.loadShow(show);
+      if(show.type === "tv"){
+        this.els.seasonSelect.value = hist.season || 1;
+        this.renderEpisodes();
+        this.els.episodeSelect.value = hist.episode || 1;
+      }
+      this.setServer(hist.server || 1);
+      Engine.load();
+      this.els.modalBackdrop.classList.remove("active");
+    }
+  },
+
+  openManageDbModal(){
+    this.els.modalTitle.innerHTML = `<i class="fas fa-database" style="color:var(--accent-warning)"></i> تحرير العناصر المضافة (${customDB.length})`;
+    this.els.modalSearchBox.classList.remove("hidden");
+    this.els.dbSearchInput.value = "";
+    this.renderCustomDbItems("");
+    this.els.modalBackdrop.classList.add("active");
+  },
+
+  renderCustomDbItems(query = ""){
+    if(customDB.length === 0){
+      this.els.modalBody.innerHTML = `
+        <div class="empty-msg">
+          لا توجد عناصر مضافة يدوياً حالياً.<br>
+          <small style="color:var(--text-muted)">العناصر المدمجة الأساسية محمية ولا يمكن تعديلها.</small>
+        </div>`;
+      return;
+    }
+
+    const filtered = customDB.map((item, originalIndex) => ({ ...item, originalIndex }))
+      .filter(item => item.title.toLowerCase().includes(query) || item.slug.toLowerCase().includes(query));
+
+    if(filtered.length === 0){
+      this.els.modalBody.innerHTML = `<div class="empty-msg">لا توجد نتائج مطابقة للبحث "${query}"</div>`;
+      return;
+    }
+
+    this.els.modalBody.innerHTML = filtered.map(item => `
+      <div class="modal-item">
+        <div class="modal-item-info">
+          <div class="modal-item-title">${item.title}</div>
+          <div class="modal-item-sub">Slug: ${item.slug}</div>
+          <span class="badge-custom">عنصر مضاف</span>
+        </div>
+        <div class="modal-actions-btns">
+          <button class="modal-item-btn edit" onclick="UI.editCustomDbItem(${item.originalIndex})" title="تحرير واستدعاء التعبئة"><i class="fas fa-pencil-alt"></i></button>
+          <button class="modal-item-btn del" onclick="UI.deleteCustomDbItem(${item.originalIndex})" title="حذف من المكتبة"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  editCustomDbItem(cIdx){
+    const item = customDB[cIdx];
+    if(!item) return;
+
+    // استدعاء وتعبئة البيانات في خانات الإعدادات المتقدمة
+    this.els.advTypeSelect.value = item.type;
+    this.els.advTypeSelect.dispatchEvent(new Event('change'));
+    
+    this.els.advNameInput.value = item.slug;
+
+    if(item.type === "tv" && item.seasons && item.seasons.length > 0){
+      const sCount = item.seasons.length;
+      this.els.advSeasonCountSelect.value = sCount;
+      this.renderAdvEpisodeInputs(sCount);
+
+      const inputs = document.querySelectorAll('.adv-ep-input');
+      item.seasons.forEach((seasonData, idx) => {
+        if(inputs[idx]){
+          inputs[idx].value = seasonData.eps;
+        }
+      });
+    }
+
+    // إغلاق قائمة التحرير المنبثقة
+    this.els.modalBackdrop.classList.remove("active");
+  },
+
+  deleteCustomDbItem(cIdx){
+    const deletedItem = customDB[cIdx];
+    customDB.splice(cIdx, 1);
+    Storage.saveCustomCatalog(customDB);
+    DB = [...customDB, ...DEFAULT_DB];
+    
+    this.renderCatalog();
+    
+    // إغلاق قائمة التحرير المنبثقة
+    this.els.modalBackdrop.classList.remove("active");
+
+    // تنظيف الخانات إذا كان العنصر المحذوف هو الموجود بخانات السحب حالياً
+    if(deletedItem && this.els.advNameInput.value.trim() === deletedItem.slug){
+      this.clearAdvInputs();
+    }
+
+    this.loadShow(DB[0]);
+    Engine.load();
+  },
+
   fillAdvDefaults(){
     this.els.advTypeSelect.value = "tv";
     this.els.advTypeSelect.dispatchEvent(new Event('change'));
@@ -404,7 +735,7 @@ const UI = {
     if(inputs[2]) inputs[2].value = 22;
   },
   renderCatalog(){
-    this.els.catalogSelect.innerHTML = DB.map((item, idx) => `<option value="${idx}">${item.title}</option>`).join('');
+    this.els.catalogSelect.innerHTML = DB.map((item, idx) => `<option value="${idx}">${item.title} ${item.isBuiltIn ? '' : '⭐️ (مضاف)'}</option>`).join('');
   },
   renderServers(){
     const chips = [];
@@ -425,6 +756,7 @@ const UI = {
     Engine.load();
   },
   loadShow(show){
+    this.updateFavButtonState();
     if(show.type === "movie"){
       this.els.seasonGroup.classList.add("hidden");
       this.els.episodeGroup.classList.add("hidden");
@@ -461,11 +793,9 @@ const UI = {
     const firstSeasonNum = seasons[0] ? seasons[0].n : 1;
     const lastSeasonObj = seasons[seasons.length - 1];
     
-    // تعتيم/تعطيل زر السابق إذا كان الشخص في الموسم الأول، الحلقة الأولى
     const isFirstEpOfFirstSeason = (st.season === firstSeasonNum && st.episode === 1);
     this.els.prevEpBtn.classList.toggle("disabled", isFirstEpOfFirstSeason);
 
-    // تعتيم زر التالي إذا كان الشخص في الموسم الأخير، الحلقة الأخيرة
     const isLastEpOfLastSeason = (lastSeasonObj && st.season === lastSeasonObj.n && st.episode === lastSeasonObj.eps);
     this.els.nextEpBtn.classList.toggle("disabled", isLastEpOfLastSeason);
   },
@@ -481,10 +811,8 @@ const UI = {
     let targetEp = st.episode + delta;
 
     if(delta === -1){
-      // الضغط على السابق
       if(targetEp < 1){
         if(currentSeasonIdx > 0){
-          // الانتقال لآخر حلقة في الموسم السابق
           const prevSeasonObj = seasons[currentSeasonIdx - 1];
           State.set({season: prevSeasonObj.n, episode: prevSeasonObj.eps});
           this.els.seasonSelect.value = prevSeasonObj.n;
@@ -498,10 +826,8 @@ const UI = {
         Engine.load();
       }
     } else if(delta === 1){
-      // الضغط على التالي
       if(targetEp > currentSeasonObj.eps){
         if(currentSeasonIdx < seasons.length - 1){
-          // الانتقال للحلقة الأولى في الموسم التالي
           const nextSeasonObj = seasons[currentSeasonIdx + 1];
           State.set({season: nextSeasonObj.n, episode: 1});
           this.els.seasonSelect.value = nextSeasonObj.n;
@@ -526,6 +852,20 @@ const Engine = {
     UI.els.playerOverlay.classList.remove("hidden");
     UI.els.videoPlayer.classList.remove("loaded");
     UI.els.videoPlayer.src = url;
+    
+    let hist = Storage.getHistory();
+    hist = hist.filter(h => h.slug !== st.slug);
+    hist.unshift({
+      title: st.currentShow.title,
+      slug: st.slug,
+      type: st.type,
+      season: st.season,
+      episode: st.episode,
+      server: st.server
+    });
+    if(hist.length > 20) hist.pop();
+    Storage.saveHistory(hist);
+
     setTimeout(() => {
       UI.els.videoPlayer.classList.add("loaded");
       UI.els.playerOverlay.classList.add("hidden");
